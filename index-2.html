@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#0a0f1a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Nigehbān — Ward Handover</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400..700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%233ee7cf'/%3E%3Cstop offset='1' stop-color='%230e9c8a'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M50 8 L84 20 V50 C84 72 68 86 50 92 C32 86 16 72 16 50 V20 Z' fill='url(%23g)'/%3E%3Cpath d='M50 15 L78 24 V50 C78 68 65 80 50 85 C35 80 22 68 22 50 V24 Z' fill='%230a0f1a' opacity='0.86'/%3E%3Cpath d='M26 52 H40 L45 40 L52 62 L58 48 L62 52 H74' stroke='%233ee7cf' stroke-width='3.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#0a0f1a;--card:#131c2b;--card2:#182234;--line:#233247;--line2:#2c3e57;
+  --txt:#eef3fa;--dim:#9fb2ca;--mut:#657f9e;
+  --teal:#34d3bd;--teal-d:#0e6b60;
+  --stable:#3ed693;--watch:#f8b64c;--sick:#fb5f7c;--blue:#63a4ff;--violet:#a78bfa;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:14px;line-height:1.4;overscroll-behavior-y:none;-webkit-font-smoothing:antialiased}
+.app{max-width:460px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;background:var(--bg)}
+
+header{position:sticky;top:0;z-index:40;background:linear-gradient(180deg,#0a0f1a,#0a0f1af2);backdrop-filter:blur(12px);padding:calc(env(safe-area-inset-top) + 10px) 14px 0;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.brand h1{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px}
+.logomark{flex:0 0 auto;filter:drop-shadow(0 0 6px #34d3bd33)}
+.wordmark{display:flex;align-items:baseline;gap:8px;letter-spacing:.2px}
+.wm-ur{font-family:'Noto Nastaliq Urdu',serif;font-size:14px;color:var(--teal);font-weight:500;line-height:1;transform:translateY(1px)}
+.hstat{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--dim)}
+.sync{display:flex;align-items:center;gap:5px}
+.sdot{width:7px;height:7px;border-radius:50%;background:var(--mut)}
+.sdot.live{background:var(--stable);box-shadow:0 0 6px var(--stable)}
+.sdot.demo{background:var(--watch)}
+.sdot.err{background:var(--sick)}
+
+.bays{display:flex;gap:5px;overflow-x:auto;padding:10px 0 9px;scrollbar-width:none}
+.bays::-webkit-scrollbar{display:none}
+.bay{flex:0 0 auto;padding:6px 11px;border-radius:10px;background:var(--card);border:1px solid var(--line);font-size:12.5px;color:var(--dim);font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:.15s;white-space:nowrap}
+.bay .n{font-size:10.5px;background:#00000055;padding:0 6px;border-radius:8px;font-weight:700;line-height:16px}
+.bay.sel{background:var(--teal-d);border-color:var(--teal);color:#eafffb}
+.bay.sel .n{background:#00000030;color:#eafffb}
+.bay .dot{width:6px;height:6px;border-radius:50%;background:var(--sick)}
+
+.filters{display:flex;gap:6px;overflow-x:auto;padding:0 14px 10px;scrollbar-width:none}
+.filters::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;font-size:11.5px;padding:5px 10px;border-radius:16px;background:var(--card);border:1px solid var(--line);color:var(--mut);cursor:pointer;font-weight:600}
+.chip.on{background:#1a2c44;color:var(--txt);border-color:#31517a}
+.chip .c{color:var(--sick);font-weight:800}
+
+main{flex:1;padding:2px 12px 92px}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:8px;overflow:hidden;transition:border-color .15s}
+.card.open{border-color:var(--line2)}
+.head{display:grid;grid-template-columns:4px 1fr auto;cursor:pointer}
+.rail{width:4px}
+.card.stable .rail{background:var(--stable)}.card.watch .rail{background:var(--watch)}.card.sick .rail{background:var(--sick)}
+.hmid{padding:10px 4px 10px 11px;min-width:0}
+.l1{display:flex;align-items:center;gap:7px}
+.name{font-weight:700;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bed{font-size:10px;color:var(--mut);font-weight:700;background:#00000044;padding:1px 6px;border-radius:6px;flex:0 0 auto}
+.age{font-size:11px;color:var(--mut);flex:0 0 auto}
+.l2{display:flex;align-items:center;gap:6px;margin-top:3px;min-width:0}
+.dx{font-size:12.5px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
+.flags{display:flex;gap:5px;flex:0 0 auto}
+.fl{font-size:10px;font-weight:800;min-width:20px;height:18px;padding:0 4px;border-radius:6px;display:grid;place-items:center}
+.fl.abx{background:#3a2408;color:#f8b64c}.fl.o2{background:#0a2c3d;color:#63c8f0}
+.fl.lab{background:#2b1030;color:#e28df0}.fl.esc{background:#3a0f18;color:#fb8fa3}
+.fl.shift{background:#0c2e22;color:#5fe0b0}
+.hend{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 12px;border-left:1px solid var(--line)}
+.news{font-size:20px;font-weight:800;line-height:1;font-family:'JetBrains Mono',monospace}
+.card.stable .news{color:var(--stable)}.card.watch .news{color:var(--watch)}.card.sick .news{color:var(--sick)}
+.newsl{font-size:8px;color:var(--mut);letter-spacing:.6px;margin-top:2px}
+
+.body{display:none;padding:0 12px 12px}
+.card.open .body{display:block;animation:fd .18s ease}
+@keyframes fd{from{opacity:0}to{opacity:1}}
+.divider{height:1px;background:var(--line);margin:2px 0 11px}
+.escplan{display:flex;align-items:center;gap:8px;background:linear-gradient(90deg,#2a0e15,#1f0c12);border:1px solid #5a1f2d;border-radius:10px;padding:8px 10px;margin-bottom:11px;font-size:12px}
+.escplan .k{color:#ff9aab;font-weight:700;flex:1}.escplan .k b{color:#fff}
+.escplan .call{background:var(--sick);color:#2a0009;font-weight:800;font-size:10.5px;padding:2px 8px;border-radius:7px;white-space:nowrap}
+.escplan .x{color:#8a5563;font-size:16px;cursor:pointer;padding:0 2px}
+.vitals{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-bottom:12px}
+.v{background:var(--card2);border:1px solid var(--line);border-radius:9px;padding:6px 2px;text-align:center}
+.v .vv{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13.5px}
+.v .vl{font-size:8px;color:var(--mut);margin-top:1px;text-transform:uppercase}
+.v.warn .vv{color:var(--watch)}.v.bad .vv{color:var(--sick)}
+.sbar{margin-bottom:13px}
+.srow{display:flex;gap:8px;padding:5px 0}
+.srow+.srow{border-top:1px dashed var(--line)}
+.stag{flex:0 0 18px;height:18px;border-radius:5px;font-size:10px;font-weight:800;display:grid;place-items:center;color:#06121e}
+.tS{background:var(--blue)}.tB{background:var(--violet)}.tA{background:var(--watch)}.tR{background:var(--stable)}
+.stxt{flex:1;font-size:12.5px;color:var(--dim)}.stxt b{color:var(--txt);font-weight:600}
+.sec{margin-bottom:12px}
+.sech{font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--mut);margin-bottom:6px;display:flex;justify-content:space-between}
+.sech em{color:var(--teal);font-style:normal;font-weight:700}
+.ladder{display:flex;align-items:center;gap:5px;flex-wrap:wrap;font-size:11.5px}
+.rung{padding:3px 8px;border-radius:7px;font-weight:600}
+.rung.past{background:#1c2432;color:#61728a;text-decoration:line-through}
+.rung.now{background:#3a2408;color:#f8b64c;border:1px solid #6b430f}
+.rung.none{background:#14251b;color:#7bbf9a}
+.arr{color:var(--mut);font-size:11px}.esctag{color:var(--sick);font-weight:800;font-size:11px}
+.line{display:flex;align-items:center;gap:8px;padding:6px 9px;background:var(--card2);border:1px solid var(--line);border-radius:9px;margin-bottom:5px;font-size:12.5px}
+.tick{width:17px;height:17px;border-radius:5px;border:1.5px solid var(--mut);flex:0 0 auto;display:grid;place-items:center;font-size:11px;color:transparent;cursor:pointer;transition:.12s}
+.tick.done{background:var(--stable);border-color:var(--stable);color:#06121e}
+.line.done .lt{text-decoration:line-through;color:var(--mut)}
+.lt{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.owner{font-size:9.5px;font-weight:700;padding:1px 6px;border-radius:6px;background:#1a2c44;color:#9dc0ef;flex:0 0 auto}
+.when{font-size:10.5px;color:var(--mut);font-family:'JetBrains Mono',monospace;flex:0 0 auto}
+.follow{color:var(--watch);font-size:10px;font-weight:800;flex:0 0 auto}
+.result{font-size:9.5px;font-weight:700;padding:1px 6px;border-radius:6px;background:#123a2a;color:#7be0b0;flex:0 0 auto}
+.qadd{display:flex;gap:6px;margin-top:5px}
+.qadd input{flex:1;background:var(--card2);border:1px solid var(--line);border-radius:9px;color:var(--txt);padding:7px 10px;font-size:12.5px;font-family:inherit}
+.qadd input:focus{outline:none;border-color:var(--teal)}
+.qadd button{flex:0 0 auto;background:var(--teal-d);border:1px solid var(--teal);color:#eafffb;border-radius:9px;padding:0 12px;font-weight:700;font-size:12.5px;cursor:pointer}
+.note{background:var(--card2);border:1px solid var(--line);border-radius:9px;padding:6px 10px;margin-bottom:5px;font-size:12px}
+.note .nm{color:var(--dim)}.note .nt{font-size:9.5px;color:var(--mut);font-family:'JetBrains Mono',monospace;margin-top:2px}
+.acts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:12px}
+.act{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:8px 2px;text-align:center;font-size:10px;color:var(--dim);cursor:pointer;font-weight:600;transition:.12s}
+.act .ai{font-size:15px;display:block;margin-bottom:2px}
+.act:active{background:#1a2c44;transform:scale(.97)}
+
+.fab{position:fixed;bottom:calc(70px + env(safe-area-inset-bottom));z-index:45;right:16px}
+@media(min-width:480px){.fab{right:calc(50% - 230px + 16px)}}
+.fab button{width:52px;height:52px;border-radius:17px;border:none;background:var(--teal);color:#04231d;font-size:24px;font-weight:700;box-shadow:0 6px 20px #34d3bd44;cursor:pointer}
+nav{position:fixed;bottom:0;left:0;right:0;z-index:44;background:#0a0f1af5;backdrop-filter:blur(12px);border-top:1px solid var(--line);max-width:460px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);padding:7px 0 calc(6px + env(safe-area-inset-bottom))}
+nav a{text-align:center;font-size:9.5px;color:var(--mut);text-decoration:none;font-weight:600;display:flex;flex-direction:column;gap:2px;align-items:center;cursor:pointer}
+nav a .ni{font-size:17px}nav a.on{color:var(--teal)}
+
+.scrim{position:fixed;inset:0;background:#000b;z-index:60;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(2px)}
+.scrim.show{display:flex}
+.sheet{background:var(--card);width:100%;max-width:460px;border-radius:20px 20px 0 0;border:1px solid var(--line);border-bottom:0;padding:6px 14px calc(18px + env(safe-area-inset-bottom));max-height:86vh;overflow:auto;animation:up .24s cubic-bezier(.2,.8,.2,1)}
+@keyframes up{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.grab{width:36px;height:4px;background:#33465e;border-radius:3px;margin:5px auto 12px}
+.sheet h3{font-size:16px;margin-bottom:3px}
+.sheet .sub{color:var(--mut);font-size:12px;margin-bottom:13px}.sheet .sub b{color:var(--dim)}
+.field{margin-bottom:11px}
+.field label{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);display:block;margin-bottom:6px}
+.field select,.field input,.field textarea{width:100%;background:var(--card2);border:1px solid var(--line);border-radius:10px;color:var(--txt);padding:10px 11px;font-size:13.5px;font-family:inherit}
+.field textarea{min-height:56px;resize:vertical}
+.field :focus{outline:none;border-color:var(--teal)}
+.pillrow{display:flex;gap:6px;flex-wrap:wrap}
+.pill{padding:7px 12px;border-radius:10px;background:var(--card2);border:1px solid var(--line);font-size:12.5px;color:var(--dim);cursor:pointer;font-weight:600}
+.pill.sel{background:var(--teal-d);border-color:var(--teal);color:#eafffb}
+.go{width:100%;margin-top:6px;background:var(--teal);color:#04231d;border:none;border-radius:12px;padding:13px;font-size:14.5px;font-weight:700;cursor:pointer}
+.go.ghost{background:transparent;border:1px solid var(--line);color:var(--dim)}
+.go.danger{background:transparent;border:1px solid #5a1f2d;color:var(--sick)}
+.arrow-move{display:flex;align-items:center;gap:9px;justify-content:center;margin:4px 0 12px;font-size:14px;font-weight:700}
+.arrow-move .to{color:var(--teal)}.arrow-move .from{color:var(--mut)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:118px;background:#0d3226;border:1px solid #1c6b50;color:#8fe9c4;padding:10px 16px;border-radius:11px;font-size:12.5px;font-weight:600;z-index:80;opacity:0;transition:.3s;pointer-events:none;max-width:88%;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(-5px)}
+.toast.bad{background:#331015;border-color:#6b1c2c;color:#f8a}
+.empty{text-align:center;color:var(--mut);padding:44px 20px;font-size:13px}
+
+.gate{position:fixed;inset:0;z-index:90;background:radial-gradient(120% 80% at 50% 0%, #10202e 0%, var(--bg) 60%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center}
+.gate-logo{margin-bottom:10px;filter:drop-shadow(0 4px 20px #34d3bd33)}
+.gate-ur{font-family:'Noto Nastaliq Urdu',serif;font-size:30px;color:var(--teal);line-height:1.7;margin-bottom:2px}
+.gate h2{font-size:22px;margin-bottom:4px;letter-spacing:.3px}
+.gate p{color:var(--mut);font-size:13px;margin-bottom:22px;max-width:280px}
+.gate input{width:100%;max-width:280px;background:var(--card2);border:1px solid var(--line);border-radius:12px;color:var(--txt);padding:13px;font-size:15px;text-align:center;margin-bottom:10px}
+.gate input:focus{outline:none;border-color:var(--teal)}
+.gate button{width:100%;max-width:280px;background:var(--teal);color:#04231d;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:700;cursor:pointer}
+.gate .hint{margin-top:16px;font-size:11px;color:var(--mut)}
+.gate .gateswap{margin-top:14px;font-size:12.5px;color:var(--mut)}
+.gate .gateswap a{color:var(--teal);font-weight:600;cursor:pointer}
+.gate input{margin-bottom:10px}
+.banner{background:#2a1e08;border-bottom:1px solid #5a4410;color:#f8d27a;font-size:11.5px;text-align:center;padding:6px 12px}
+.logrow{display:flex;gap:9px;padding:8px 0;border-bottom:1px solid var(--line);font-size:12.5px}
+.logrow:last-child{border-bottom:0}
+.logdot{flex:0 0 8px;width:8px;height:8px;border-radius:50%;margin-top:4px}
+.logdot.ins{background:var(--stable)}.logdot.upd{background:var(--blue)}.logdot.del{background:var(--sick)}
+.logbody{flex:1;min-width:0}
+.logtop{display:flex;justify-content:space-between;gap:8px}
+.logpt{font-weight:700;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.logat{font-size:10px;color:var(--mut);font-family:'JetBrains Mono',monospace;flex:0 0 auto}
+.logdet{color:var(--dim);margin-top:1px}
+.logby{font-size:10px;color:var(--mut);margin-top:2px}
+.logby b{color:#9dc0ef}
+.logfilters{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <linearGradient id="lg" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#3ee7cf"/><stop offset="1" stop-color="#0e9c8a"/>
+  </linearGradient>
+</defs></svg>
+
+<!-- ============ CONFIG: paste your Supabase project values here ============ -->
+<script>
+const CONFIG = {
+  SUPABASE_URL:  "",   // e.g. https://abcdxyz.supabase.co
+  SUPABASE_ANON: "",   // your project's anon / publishable key
+  WARD_INVITE:   "PAEDS2026"  // code residents type once when signing up (change this)
+};
+</script>
+
+<div class="gate" id="gate">
+  <svg class="gate-logo" viewBox="0 0 100 100" width="72" height="72" aria-hidden="true">
+    <path d="M50 8 L84 20 V50 C84 72 68 86 50 92 C32 86 16 72 16 50 V20 Z" fill="url(#lg)"/>
+    <path d="M50 15 L78 24 V50 C78 68 65 80 50 85 C35 80 22 68 22 50 V24 Z" fill="#0a0f1a" opacity=".86"/>
+    <path d="M26 52 H40 L45 40 L52 62 L58 48 L62 52 H74" stroke="#3ee7cf" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <div class="gate-ur">نگہبان</div>
+  <h2 id="gateTitle">Nigehbān</h2>
+  <p id="gateSub">Sign in with your resident email.</p>
+  <input id="fName" type="text" placeholder="Full name" autocomplete="name" style="display:none">
+  <input id="fEmail" type="email" placeholder="Email" autocomplete="email">
+  <input id="fPass" type="password" placeholder="Password" autocomplete="current-password">
+  <input id="fInvite" type="text" placeholder="Ward invite code" autocomplete="off" style="display:none">
+  <button id="gateBtn">Sign in</button>
+  <div class="gateswap" id="gateSwap">New here? <a id="swapLink">Create an account</a></div>
+  <div class="hint" id="gateHint"></div>
+</div>
+
+<div class="app" id="app" style="display:none">
+  <div class="banner" id="banner" style="display:none"></div>
+  <header>
+    <div class="brand">
+      <h1>
+        <svg class="logomark" viewBox="0 0 100 100" width="24" height="24" aria-hidden="true">
+          <path d="M50 8 L84 20 V50 C84 72 68 86 50 92 C32 86 16 72 16 50 V20 Z" fill="url(#lg)"/>
+          <path d="M50 15 L78 24 V50 C78 68 65 80 50 85 C35 80 22 68 22 50 V24 Z" fill="#0a0f1a" opacity=".86"/>
+          <path d="M26 52 H40 L45 40 L52 62 L58 48 L62 52 H74" stroke="#3ee7cf" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="wordmark">Nigehbān<span class="wm-ur">نگہبان</span></span>
+      </h1>
+      <div class="hstat"><span class="sync"><span class="sdot" id="sdot"></span><span id="syncTxt">…</span></span></div>
+    </div>
+    <div class="bays" id="bays"></div>
+  </header>
+  <div class="filters" id="filters">
+    <div class="chip on" data-f="all">All</div>
+    <div class="chip" data-f="sick">Sick <span class="c" id="sickN"></span></div>
+    <div class="chip" data-f="esc">Escalation set</div>
+    <div class="chip" data-f="abx">Abx</div>
+    <div class="chip" data-f="lab">Labs pending</div>
+    <div class="chip" data-f="task">Open tasks</div>
+    <div class="chip" data-f="shift">To shift</div>
+  </div>
+  <main id="list"></main>
+  <div class="fab"><button id="addBtn" aria-label="Add patient">+</button></div>
+  <nav>
+    <a class="on"><span class="ni">📋</span>Handover</a>
+    <a id="navShift"><span class="ni">🔀</span>Shift</a>
+    <a id="navLabs"><span class="ni">🧪</span>Labs</a>
+    <a id="navLog"><span class="ni">🕓</span>History</a>
+    <a id="navMe"><span class="ni">👤</span>Me</a>
+  </nav>
+</div>
+
+<div class="scrim" id="scrim"><div class="sheet" id="sheet"></div></div>
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const $=s=>document.querySelector(s);
+const stamp=()=>new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+let db=null, MODE='demo', P=[], sel='picu', filt='all', ME='Dr Ali';
+
+const BAYS=[
+  {id:'measles',name:'Measles',alert:true},{id:'general',name:'General'},
+  {id:'hdu',name:'HDU',alert:true},{id:'nursery',name:'Nursery'},
+  {id:'picu',name:'PICU',alert:true},{id:'nicu',name:'NICU'},
+];
+
+const DEMO=[
+ {id:1,bay:'picu',name:'Ahmed R.',bed:'P-2',age:'3y M',sev:'sick',news:8,dx:'Septic shock, on inotropes',s_situation:'Noradrenaline 0.3, ventilated & sedated.',b_background:'D2 septic shock, cultures sent, LDH 980.',a_assessment:'Lactate 3.1→2.2, perfusion improving.',r_recommend:'Wean inotrope if MAP holds; lactate 2-hrly.',vitals:[['HR','148','warn'],['RR','vent','na'],['SpO₂','96','ok'],['MAP','58','ok'],['T°','38.4','warn']],abx:{past:['Ceftriaxone'],now:'Meropenem + Vanc',esc:true},tasks:[{t:'Repeat lactate',w:'06:00',o:'Ali',done:false},{t:'Chase blood C/S',w:'AM',o:'Lab',done:false}],labs:[{t:'Lactate',s:'pending',w:'sent 04:00'},{t:'Blood C/S',s:'pending',w:'D2 no growth'},{t:'ABG',s:'result',w:'pH 7.31'}],notes:[],esc:null,flags:['abx','o2']},
+ {id:2,bay:'picu',name:'Sana F.',bed:'P-4',age:'8m F',sev:'watch',news:5,dx:'Bronchiolitis, CPAP',s_situation:'CPAP 6/40%, comfortable.',b_background:'RSV +ve, D3, Na 129.',a_assessment:'Work of breathing settling.',r_recommend:'Trial off CPAP AM; recheck Na.',vitals:[['HR','132','ok'],['RR','44','warn'],['SpO₂','94','ok'],['MAP','—','na'],['T°','37.2','ok']],abx:{past:[],now:'None',esc:false},tasks:[{t:'Recheck serum Na',w:'AM',o:'Ali',done:false},{t:'Trial off CPAP',w:'Round',o:'Cons',done:false}],labs:[{t:'Serum Na',s:'pending',w:'due AM'},{t:'RSV panel',s:'result',w:'+ve'}],notes:[],esc:null,flags:['o2']},
+ {id:3,bay:'hdu',name:'Bilal K.',bed:'H-1',age:'5y M',sev:'watch',news:6,dx:'Severe pneumonia',s_situation:'O₂ 4L NC, mild distress.',b_background:'D2 IV abx, CRP 180.',a_assessment:'Sats borderline on exertion.',r_recommend:'PICU + HFNC if SpO₂<90.',vitals:[['HR','128','ok'],['RR','40','warn'],['SpO₂','91','warn'],['MAP','—','na'],['T°','38.9','bad']],abx:{past:['Amoxclav'],now:'Cefotaxime',esc:true},tasks:[{t:'Reassess O₂',w:'2-hrly',o:'Ali',done:false},{t:'PICU bed standby',w:'now',o:'Ali',done:false}],labs:[{t:'CRP',s:'result',w:'180 ↑'},{t:'CXR',s:'pending',w:'ordered'}],notes:[],esc:null,flags:['abx','o2','shift']},
+ {id:4,bay:'hdu',name:'Ayesha M.',bed:'H-3',age:'2y F',sev:'stable',news:2,dx:'AGE + dehydration, improving',s_situation:'Tolerating orals, IV weaning.',b_background:'D2, K was 3.1 corrected.',a_assessment:'Rehydrated, UO good.',r_recommend:'Step down to General; stop IV.',vitals:[['HR','110','ok'],['RR','24','ok'],['SpO₂','99','ok'],['MAP','—','na'],['T°','37.0','ok']],abx:{past:[],now:'None',esc:false},tasks:[{t:'Stop IV fluids',w:'if orals ok',o:'Ali',done:true},{t:'Move to General',w:'AM',o:'Ali',done:false}],labs:[{t:'Serum K',s:'result',w:'3.9'}],notes:[],esc:null,flags:['shift']},
+ {id:5,bay:'measles',name:'Hamza T.',bed:'M-1',age:'4y M',sev:'watch',news:4,dx:'Measles + pneumonia',s_situation:'Rash fading, O₂ 2L.',b_background:'Vit A given, D3 abx.',a_assessment:'Feeding poorly.',r_recommend:'Wean O₂; barrier nursing.',vitals:[['HR','122','ok'],['RR','34','warn'],['SpO₂','93','warn'],['MAP','—','na'],['T°','38.2','warn']],abx:{past:[],now:'Ampicillin',esc:false},tasks:[{t:'2nd dose Vit A',w:'AM',o:'Ali',done:false},{t:'Wean O₂',w:'Round',o:'Cons',done:false}],labs:[{t:'CBC',s:'result',w:'WBC 4.2'}],notes:[],esc:null,flags:['abx','o2']},
+ {id:6,bay:'general',name:'Fatima Z.',bed:'G-7',age:'6y F',sev:'stable',news:1,dx:'Enteric fever, afebrile 24h',s_situation:'Well, eating.',b_background:'D5 ceftriaxone.',a_assessment:'Recovering.',r_recommend:'D/C tomorrow; switch oral cefixime.',vitals:[['HR','96','ok'],['RR','20','ok'],['SpO₂','99','ok'],['MAP','—','na'],['T°','36.9','ok']],abx:{past:['Ceftriaxone IV'],now:'→ oral cefixime',esc:false},tasks:[{t:'Discharge meds',w:'AM',o:'Ali',done:false}],labs:[{t:'Blood C/S',s:'result',w:'S. typhi'}],notes:[],esc:null,flags:['abx']},
+ {id:7,bay:'nicu',name:'Baby Areej',bed:'N-3',age:'D4 M',sev:'watch',news:3,dx:'Preterm 33wk, ?sepsis',s_situation:'NCPAP, feeds via OGT.',b_background:'CRP borderline, abx D2.',a_assessment:'Stable, apnoea x1.',r_recommend:'Repeat CRP; caffeine.',vitals:[['HR','160','ok'],['RR','52','warn'],['SpO₂','95','ok'],['MAP','—','na'],['T°','36.8','ok']],abx:{past:[],now:'Amp + Gent',esc:false},tasks:[{t:'Repeat CRP',w:'AM',o:'Ali',done:false},{t:'Start caffeine',w:'now',o:'Ali',done:false}],labs:[{t:'CRP',s:'pending',w:'due AM'},{t:'Blood C/S',s:'pending',w:'D2'}],notes:[],esc:null,flags:['abx']},
+ {id:8,bay:'nursery',name:'Baby Noor',bed:'Nu-5',age:'D2 F',sev:'stable',news:0,dx:'Neonatal jaundice, phototherapy',s_situation:'Under lights, feeding well.',b_background:'TSB 16, no risk factors.',a_assessment:'Improving.',r_recommend:'Repeat TSB 12h; stop if <13.',vitals:[['HR','140','ok'],['RR','44','ok'],['SpO₂','98','ok'],['MAP','—','na'],['T°','36.9','ok']],abx:{past:[],now:'None',esc:false},tasks:[{t:'Repeat TSB',w:'18:00',o:'Ali',done:false}],labs:[{t:'TSB',s:'pending',w:'12-hrly'}],notes:[],esc:null,flags:['lab']},
+];
+
+function normalize(row){
+  return {id:row.id,bay:row.bay,name:row.name,bed:row.bed,age:row.age,sev:row.sev,news:row.news,dx:row.dx,
+    s_situation:row.s_situation,b_background:row.b_background,a_assessment:row.a_assessment,r_recommend:row.r_recommend,
+    vitals:row.vitals||[],abx:row.abx||{past:[],now:'None',esc:false},
+    tasks:row.tasks||[],labs:row.labs||[],notes:row.notes||[],esc:row.esc||null,flags:row.flags||[]};
+}
+function toRow(p){
+  return {bay:p.bay,name:p.name,bed:p.bed,age:p.age,sev:p.sev,news:p.news,dx:p.dx,
+    s_situation:p.s_situation,b_background:p.b_background,a_assessment:p.a_assessment,r_recommend:p.r_recommend,
+    vitals:p.vitals,abx:p.abx,tasks:p.tasks,labs:p.labs,notes:p.notes,esc:p.esc,flags:p.flags,updated_by:ME};
+}
+
+async function boot(){
+  if(db){
+    try{
+      const {data,error}=await db.from('patients').select('*').order('news',{ascending:false});
+      if(error)throw error;
+      P=data.map(normalize); MODE='live';
+      setSync('live','Live · synced');
+      db.channel('patients-live')
+        .on('postgres_changes',{event:'*',schema:'public',table:'patients'},payload=>applyChange(payload))
+        .subscribe(st=>{ if(st==='CHANNEL_ERROR')setSync('err','Sync error'); });
+    }catch(e){
+      console.error(e); MODE='demo'; P=DEMO.slice();
+      setSync('err','Connection failed — offline');
+      showBanner('Could not load ward data. Check that schema.sql + auth.sql ran. Showing demo data.');
+    }
+  }else{
+    MODE='demo'; P=DEMO.slice();
+    setSync('demo','Demo mode — not saving');
+    showBanner('Demo mode: paste your Supabase URL + anon key in the CONFIG block to go live.');
+  }
+  renderBays(); renderList();
+}
+function applyChange(payload){
+  const {eventType,new:nu,old:od}=payload;
+  const openId=currentOpenId();
+  if(eventType==='INSERT'){ if(!P.find(x=>x.id===nu.id))P.push(normalize(nu)); }
+  else if(eventType==='UPDATE'){ const i=P.findIndex(x=>x.id===nu.id); if(i>-1)P[i]=normalize(nu); else P.push(normalize(nu)); }
+  else if(eventType==='DELETE'){ P=P.filter(x=>x.id!==od.id); }
+  renderBays(); renderList(); if(openId)reopen(openId);
+}
+async function save(p){
+  if(MODE!=='live')return;
+  const {error}=await db.from('patients').update(toRow(p)).eq('id',p.id);
+  if(error)toast('Save failed: '+error.message,true);
+}
+async function insertPatient(p){
+  if(MODE!=='live'){ p.id=Date.now(); P.push(p); renderBays(); renderList(); return; }
+  const {data,error}=await db.from('patients').insert(toRow(p)).select().single();
+  if(error){ toast('Add failed: '+error.message,true); return; }
+  if(!P.find(x=>x.id===data.id))P.push(normalize(data));
+  renderBays(); renderList();
+}
+async function removePatient(id){
+  if(MODE==='live'){ const {error}=await db.from('patients').delete().eq('id',id); if(error){toast('Delete failed',true);return;} }
+  P=P.filter(x=>x.id!==id); renderBays(); renderList();
+}
+
+const byId=i=>P.find(p=>p.id===i);
+function shortMe(){ // compact owner tag from name or email
+  const s=(ME||'').replace(/^Dr\s+/i,'').trim();
+  if(s.includes('@'))return s.split('@')[0].slice(0,8);
+  const parts=s.split(/\s+/); return (parts[0]||'me').slice(0,8);
+}
+const sickCount=()=>P.filter(p=>p.sev==='sick').length;
+function setSync(cls,txt){ const d=$('#sdot'); d.className='sdot '+cls; $('#syncTxt').textContent=txt; }
+function showBanner(t){ const b=$('#banner'); b.textContent=t; b.style.display='block'; }
+function toast(m,bad){ const t=$('#toast'); t.textContent=m; t.className='toast show'+(bad?' bad':''); clearTimeout(t._h); t._h=setTimeout(()=>t.className='toast',2200); }
+function currentOpenId(){ const c=document.querySelector('.card.open'); return c?+c.dataset.id:null; }
+function reopen(id){ const c=$(`.card[data-id="${id}"]`); if(c)c.classList.add('open'); }
+function commit(p,silent){ renderBays(); renderList(); reopen(p.id); save(p); if(!silent)toast('Saved'); }
+
+function renderBays(){
+  $('#bays').innerHTML=BAYS.map(b=>{
+    const c=P.filter(p=>p.bay===b.id).length;
+    return `<div class="bay ${b.id===sel?'sel':''}" data-bay="${b.id}">${b.alert?'<span class="dot"></span>':''}${b.name}<span class="n">${c}</span></div>`;
+  }).join('');
+  document.querySelectorAll('.bay').forEach(el=>el.onclick=()=>{sel=el.dataset.bay;renderBays();renderList()});
+  $('#sickN').textContent=sickCount();
+}
+function pass(p){
+  if(filt==='all')return true;
+  if(filt==='sick')return p.sev==='sick';
+  if(filt==='esc')return !!p.esc;
+  if(filt==='abx')return p.flags.includes('abx');
+  if(filt==='lab')return p.labs.some(l=>l.s==='pending');
+  if(filt==='task')return p.tasks.some(t=>!t.done);
+  if(filt==='shift')return p.flags.includes('shift');
+}
+function flagGlyph(f){const m={abx:['abx','Ab'],o2:['o2','O₂'],lab:['lab','L'],shift:['shift','⇄']};const x=m[f];return x?`<span class="fl ${x[0]}">${x[1]}</span>`:'';}
+function card(p){
+  const openT=p.tasks.filter(t=>!t.done).length;
+  const glyphs=[...p.flags]; if(p.esc)glyphs.unshift('esc');
+  const flagRow=glyphs.map(f=> f==='esc'?'<span class="fl esc">⬆</span>':flagGlyph(f)).join('');
+  const abx=(p.abx.now==='None'||!p.abx.now)
+    ?`<div class="ladder"><span class="rung none">No antibiotics</span></div>`
+    :`<div class="ladder">${(p.abx.past||[]).map(a=>`<span class="rung past">${a}</span><span class="arr">→</span>`).join('')}<span class="rung now">${p.abx.now}</span>${p.abx.esc?' <span class="esctag">↑</span>':''}</div>`;
+  return `<div class="card ${p.sev}" data-id="${p.id}">
+    <div class="head" onclick="toggle(${p.id})">
+      <div class="rail"></div>
+      <div class="hmid">
+        <div class="l1"><span class="name">${p.name}</span><span class="bed">${p.bed||''}</span><span class="age">${p.age||''}</span></div>
+        <div class="l2"><span class="dx">${p.dx||''}</span><span class="flags">${flagRow}</span></div>
+      </div>
+      <div class="hend"><div class="news">${p.news}</div><div class="newsl">NEWS</div></div>
+    </div>
+    <div class="body">
+      <div class="divider"></div>
+      ${p.esc?`<div class="escplan"><span class="k"><b>If</b> ${p.esc.trigger}</span><span class="call">CALL ${p.esc.who}</span><span class="x" onclick="clearEsc(${p.id})">×</span></div>`:''}
+      <div class="vitals">${(p.vitals||[]).map(v=>`<div class="v ${v[2]==='warn'?'warn':v[2]==='bad'?'bad':''}"><div class="vv">${v[1]}</div><div class="vl">${v[0]}</div></div>`).join('')}</div>
+      <div class="sbar">
+        <div class="srow"><div class="stag tS">S</div><div class="stxt">${p.s_situation||''}</div></div>
+        <div class="srow"><div class="stag tB">B</div><div class="stxt">${p.b_background||''}</div></div>
+        <div class="srow"><div class="stag tA">A</div><div class="stxt">${p.a_assessment||''}</div></div>
+        <div class="srow"><div class="stag tR">R</div><div class="stxt"><b>${p.r_recommend||''}</b></div></div>
+      </div>
+      <div class="sec"><div class="sech">Antibiotics / support</div>${abx}</div>
+      <div class="sec"><div class="sech">Tasks <em>${openT} open</em></div>
+        ${p.tasks.map((t,i)=>`<div class="line ${t.done?'done':''}"><div class="tick ${t.done?'done':''}" onclick="tick(${p.id},${i})">✓</div><span class="lt">${t.t}</span><span class="owner">${t.o||''}</span><span class="when">${t.w||''}</span></div>`).join('')}
+        <div class="qadd"><input placeholder="+ quick task…" id="qt${p.id}" onkeydown="if(event.key==='Enter')addTask(${p.id})"><button onclick="addTask(${p.id})">Add</button></div>
+      </div>
+      <div class="sec"><div class="sech">Labs — send / follow</div>
+        ${p.labs.map((l,i)=>`<div class="line" onclick="toggleLab(${p.id},${i})"><span class="lt">${l.t}</span>${l.s==='pending'?'<span class="follow">FOLLOW ●</span>':'<span class="result">RESULT</span>'}<span class="when">${l.w||''}</span></div>`).join('')}
+        <div class="qadd"><input placeholder="+ send lab…" id="ql${p.id}" onkeydown="if(event.key==='Enter')addLab(${p.id})"><button onclick="addLab(${p.id})">Send</button></div>
+      </div>
+      ${p.notes.length?`<div class="sec"><div class="sech">Notes</div>${p.notes.map(n=>`<div class="note"><div class="nm">${n.txt}</div><div class="nt">${n.who} · ${n.time}</div></div>`).join('')}</div>`:''}
+      <div class="acts">
+        <div class="act" onclick="openShift(${p.id})"><span class="ai">🔀</span>Shift</div>
+        <div class="act" onclick="openEsc(${p.id})"><span class="ai">⬆️</span>Escalate</div>
+        <div class="act" onclick="focusNote(${p.id})"><span class="ai">📝</span>Note</div>
+        <div class="act" onclick="openEdit(${p.id})"><span class="ai">✏️</span>Edit</div>
+      </div>
+      <div class="qadd" id="notebox${p.id}" style="display:none;margin-top:8px"><input placeholder="handover note… (Enter)" id="qn${p.id}" onkeydown="if(event.key==='Enter')addNote(${p.id})"><button onclick="addNote(${p.id})">Save</button></div>
+    </div>
+  </div>`;
+}
+function renderList(){
+  const rows=P.filter(p=>p.bay===sel&&pass(p)).sort((a,b)=>b.news-a.news);
+  $('#list').innerHTML=rows.length?rows.map(card).join(''):`<div class="empty">Nothing matches this filter in ${BAYS.find(b=>b.id===sel).name}.</div>`;
+}
+
+window.toggle=id=>$(`.card[data-id="${id}"]`).classList.toggle('open');
+window.tick=(id,i)=>{const p=byId(id);p.tasks[i].done=!p.tasks[i].done;commit(p,true);};
+window.addTask=id=>{const el=$(`#qt${id}`);const v=el.value.trim();if(!v)return;const p=byId(id);p.tasks.push({t:v,w:stamp(),o:shortMe(),done:false});commit(p);};
+window.addLab=id=>{const el=$(`#ql${id}`);const v=el.value.trim();if(!v)return;const p=byId(id);p.labs.unshift({t:v,s:'pending',w:'sent '+stamp()});if(!p.flags.includes('lab'))p.flags.push('lab');commit(p);toast(v+' → Labs tab');};
+window.toggleLab=(id,i)=>{const p=byId(id);const l=p.labs[i];l.s=l.s==='pending'?'result':'pending';l.w=l.s==='result'?'back '+stamp():'follow';if(!p.labs.some(x=>x.s==='pending'))p.flags=p.flags.filter(f=>f!=='lab');else if(!p.flags.includes('lab'))p.flags.push('lab');commit(p,true);};
+window.focusNote=id=>{const b=$(`#notebox${id}`);b.style.display='flex';$(`#qn${id}`).focus();};
+window.addNote=id=>{const el=$(`#qn${id}`);const v=el.value.trim();if(!v)return;const p=byId(id);p.notes.unshift({txt:v,who:ME,time:stamp()});commit(p);};
+window.clearEsc=id=>{const p=byId(id);p.esc=null;commit(p);toast('Escalation cleared');};
+
+const scrim=$('#scrim'),sheet=$('#sheet');
+function showSheet(h){sheet.innerHTML='<div class="grab"></div>'+h;scrim.classList.add('show');}
+function closeSheet(){scrim.classList.remove('show');}
+window.closeSheet=closeSheet;
+scrim.onclick=e=>{if(e.target===scrim)closeSheet();};
+
+window.openEsc=id=>{
+  const p=byId(id);
+  const trg=['SpO₂ < 90%','↑ inotrope / MAP drop','New apnoea','Rising lactate','HR outside range','Not improving'];
+  const who=['SR','Consultant','PICU','Airway'];
+  showSheet(`<h3>Escalation plan</h3><div class="sub"><b>${p.name}</b> · ${p.bed} — when to act, who to call</div>
+    <div class="field"><label>Escalate if…</label><div class="pillrow" id="tp">${trg.map(t=>`<div class="pill" data-t="${t}">${t}</div>`).join('')}</div></div>
+    <div class="field"><label>or custom</label><input id="tc" placeholder="e.g. UO < 1 ml/kg/hr × 2h"></div>
+    <div class="field"><label>Then call</label><div class="pillrow" id="wp">${who.map(w=>`<div class="pill" data-w="${w}">${w}</div>`).join('')}</div></div>
+    <button class="go" id="de" disabled style="opacity:.5">Set plan</button><button class="go ghost" onclick="closeSheet()">Cancel</button>`);
+  let tg=null,cl=null;const rf=()=>{const ok=(tg||$('#tc').value.trim())&&cl;$('#de').disabled=!ok;$('#de').style.opacity=ok?1:.5;};
+  document.querySelectorAll('#tp .pill').forEach(x=>x.onclick=()=>{document.querySelectorAll('#tp .pill').forEach(y=>y.classList.remove('sel'));x.classList.add('sel');tg=x.dataset.t;$('#tc').value='';rf();});
+  $('#tc').oninput=()=>{document.querySelectorAll('#tp .pill').forEach(y=>y.classList.remove('sel'));tg=null;rf();};
+  document.querySelectorAll('#wp .pill').forEach(x=>x.onclick=()=>{document.querySelectorAll('#wp .pill').forEach(y=>y.classList.remove('sel'));x.classList.add('sel');cl=x.dataset.w;rf();});
+  $('#de').onclick=()=>{p.esc={trigger:tg||$('#tc').value.trim(),who:cl};closeSheet();commit(p);toast('Escalation set');};
+};
+window.openShift=id=>{
+  const p=byId(id);const opts=BAYS.filter(b=>b.id!==p.bay).map(b=>`<div class="pill" data-to="${b.id}">${b.name}</div>`).join('');
+  showSheet(`<h3>Shift patient</h3><div class="sub"><b>${p.name}</b> · ${p.bed}</div>
+    <div class="arrow-move"><span class="from">${BAYS.find(b=>b.id===p.bay).name}</span> → <span class="to" id="tn">select</span></div>
+    <div class="field"><label>Move to</label><div class="pillrow" id="top">${opts}</div></div>
+    <button class="go" id="ds" disabled style="opacity:.5">Confirm</button><button class="go ghost" onclick="closeSheet()">Cancel</button>`);
+  let t=null;document.querySelectorAll('#top .pill').forEach(x=>x.onclick=()=>{document.querySelectorAll('#top .pill').forEach(y=>y.classList.remove('sel'));x.classList.add('sel');t=x.dataset.to;$('#tn').textContent=BAYS.find(b=>b.id===t).name;$('#ds').disabled=false;$('#ds').style.opacity=1;});
+  $('#ds').onclick=()=>{p.bay=t;p.flags=p.flags.filter(f=>f!=='shift');closeSheet();sel=t;commit(p);toast(`${p.name} → ${BAYS.find(b=>b.id===t).name}`);};
+};
+window.openEdit=id=>{
+  const p=byId(id);const sevs=['stable','watch','sick'];
+  showSheet(`<h3>Edit patient</h3><div class="sub"><b>${p.name}</b> · ${p.bed}</div>
+    <div class="field"><label>Acuity</label><div class="pillrow" id="ev">${sevs.map(s=>`<div class="pill ${p.sev===s?'sel':''}" data-s="${s}">${s}</div>`).join('')}</div></div>
+    <div class="field"><label>NEWS score</label><input id="en" type="number" value="${p.news}" min="0" max="20"></div>
+    <div class="field"><label>Diagnosis</label><input id="ed" value="${(p.dx||'').replace(/"/g,'&quot;')}"></div>
+    <div class="field"><label>S – Situation</label><textarea id="es">${p.s_situation||''}</textarea></div>
+    <div class="field"><label>R – Recommendation / triggers</label><textarea id="er">${p.r_recommend||''}</textarea></div>
+    <button class="go" id="sv">Save changes</button>
+    <button class="go ghost" onclick="openLog(${p.id})">🕓 View this patient's history</button>
+    <button class="go danger" onclick="confirmDelete(${p.id})">Discharge / remove patient</button>
+    <button class="go ghost" onclick="closeSheet()">Cancel</button>`);
+  let sv=p.sev;document.querySelectorAll('#ev .pill').forEach(x=>x.onclick=()=>{document.querySelectorAll('#ev .pill').forEach(y=>y.classList.remove('sel'));x.classList.add('sel');sv=x.dataset.s;});
+  $('#sv').onclick=()=>{p.sev=sv;p.news=+$('#en').value||0;p.dx=$('#ed').value.trim();p.s_situation=$('#es').value.trim();p.r_recommend=$('#er').value.trim();closeSheet();commit(p);};
+};
+window.confirmDelete=id=>{
+  const p=byId(id);
+  showSheet(`<h3>Remove ${p.name}?</h3><div class="sub">This deletes the handover record. Use when the patient is discharged or transferred out.</div>
+    <button class="go danger" onclick="doDelete(${id})">Yes, remove</button>
+    <button class="go ghost" onclick="closeSheet()">Keep</button>`);
+};
+window.doDelete=id=>{closeSheet();removePatient(id);toast('Patient removed');};
+
+$('#navShift').onclick=()=>{
+  const fl=P.filter(p=>p.flags.includes('shift'));
+  showSheet(`<h3>Pending shifts</h3><div class="sub">${fl.length} flagged</div>
+    ${fl.map(p=>`<div class="line" style="margin-bottom:7px"><span class="lt"><b>${p.name}</b> · ${BAYS.find(b=>b.id===p.bay).name}</span><span class="pill sel" style="padding:5px 10px" onclick="closeSheet();openShift(${p.id})">Move →</span></div>`).join('')||'<div class="empty">Nothing to shift.</div>'}
+    <button class="go ghost" onclick="closeSheet()">Close</button>`);
+};
+$('#navLabs').onclick=()=>{
+  const pend=[];P.forEach(p=>p.labs.filter(l=>l.s==='pending').forEach(l=>pend.push({p,l})));
+  showSheet(`<h3>Labs to follow</h3><div class="sub">${pend.length} pending, all bays</div>
+    ${pend.map(({p,l})=>`<div class="line" style="margin-bottom:6px"><span class="follow">●</span><span class="lt"><b>${l.t}</b> · ${p.name} <span style="color:var(--mut)">(${BAYS.find(b=>b.id===p.bay).name})</span></span><span class="when">${l.w||''}</span></div>`).join('')||'<div class="empty">No pending labs.</div>'}
+    <button class="go ghost" onclick="closeSheet()">Close</button>`);
+};
+function logIcon(a){return a==='INSERT'?'ins':a==='DELETE'?'del':'upd';}
+function renderLogRows(rows){
+  if(!rows.length)return '<div class="empty">No history yet.</div>';
+  return rows.map(r=>{
+    const t=new Date(r.at);
+    const when=t.toLocaleString([], {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+    return `<div class="logrow"><span class="logdot ${logIcon(r.action)}"></span>
+      <div class="logbody">
+        <div class="logtop"><span class="logpt">${r.patient_name||'—'}</span><span class="logat">${when}</span></div>
+        <div class="logdet">${r.detail||r.action}</div>
+        <div class="logby">by <b>${r.changed_by||'unknown'}</b></div>
+      </div></div>`;
+  }).join('');
+}
+async function fetchLog(patientId){
+  if(MODE!=='live')return null;
+  let q=db.from('audit_log').select('*').order('at',{ascending:false}).limit(patientId?100:60);
+  if(patientId)q=q.eq('patient_id',patientId);
+  const {data,error}=await q;
+  if(error){toast('Log load failed',true);return [];}
+  return data;
+}
+window.openLog=async(patientId)=>{
+  const title=patientId?('History — '+(byId(patientId)?.name||'patient')):'Ward history';
+  showSheet(`<h3>${title}</h3><div class="sub">Every change, who made it, when — recorded by the database.</div><div id="logbox"><div class="empty">Loading…</div></div><button class="go ghost" onclick="closeSheet()">Close</button>`);
+  if(MODE!=='live'){ $('#logbox').innerHTML='<div class="empty">Audit trail is live only. Add your Supabase keys and run audit.sql to enable history.</div>'; return; }
+  const rows=await fetchLog(patientId);
+  $('#logbox').innerHTML=renderLogRows(rows);
+};
+$('#navLog').onclick=()=>openLog(null);
+
+$('#navMe').onclick=()=>{
+  const acct = MODE==='live' ? (ME+'  ·  signed in') : 'Demo mode (not saving)';
+  showSheet(`<h3>Account</h3><div class="sub">Mode: <b>${MODE==='live'?'Live (Supabase)':'Demo'}</b></div>
+    <div class="field"><label>Signed in as</label><input value="${acct}" disabled style="opacity:.7"></div>
+    <div class="field"><label>Display name (shown on your notes/tasks)</label><input id="myname" value="${ME}"></div>
+    <button class="go" onclick="setMe()">Update display name</button>
+    <button class="go ghost" onclick="logout()">Sign out</button>`);
+};
+window.setMe=async()=>{
+  const v=$('#myname').value.trim(); if(!v)return;
+  ME=v;
+  if(MODE==='live' && authUser){
+    try{
+      await db.auth.updateUser({data:{full_name:v}});
+      await db.from('residents').update({full_name:v}).eq('id',authUser.id);
+    }catch(e){/* non-fatal */}
+  }
+  closeSheet(); toast('Name updated');
+};
+window.logout=async()=>{ if(db){try{await db.auth.signOut();}catch(e){}} location.reload(); };
+
+$('#addBtn').onclick=()=>{
+  const opts=BAYS.map(b=>`<option value="${b.id}" ${b.id===sel?'selected':''}>${b.name}</option>`).join('');
+  showSheet(`<h3>New patient</h3><div class="sub">Quick SBAR entry</div>
+    <div class="field"><label>Bay</label><select id="nb">${opts}</select></div>
+    <div class="field"><label>Name</label><input id="nn" placeholder="e.g. Usman K."></div>
+    <div class="field"><label>Bed · Age</label><div style="display:flex;gap:8px"><input id="nbed" placeholder="P-3" style="flex:1"><input id="nage" placeholder="2y M" style="flex:1"></div></div>
+    <div class="field"><label>Acuity</label><div class="pillrow" id="ns"><div class="pill" data-s="stable">Stable</div><div class="pill" data-s="watch">Watch</div><div class="pill" data-s="sick">Sick</div></div></div>
+    <div class="field"><label>NEWS</label><input id="nnews" type="number" value="0" min="0" max="20"></div>
+    <div class="field"><label>Diagnosis</label><input id="ndx" placeholder="Working diagnosis"></div>
+    <div class="field"><label>S – Situation</label><textarea id="nsit" placeholder="Support, lines, status"></textarea></div>
+    <div class="field"><label>R – To-do / triggers</label><textarea id="nr" placeholder="What next shift must do"></textarea></div>
+    <button class="go" id="nsave" disabled style="opacity:.5">Add patient</button><button class="go ghost" onclick="closeSheet()">Cancel</button>`);
+  let sv='stable';document.querySelectorAll('#ns .pill').forEach(x=>x.onclick=()=>{document.querySelectorAll('#ns .pill').forEach(y=>y.classList.remove('sel'));x.classList.add('sel');sv=x.dataset.s;});
+  document.querySelectorAll('#ns .pill')[0].classList.add('sel');
+  $('#nn').oninput=()=>{const ok=$('#nn').value.trim();$('#nsave').disabled=!ok;$('#nsave').style.opacity=ok?1:.5;};
+  $('#nsave').onclick=()=>{
+    const p={bay:$('#nb').value,name:$('#nn').value.trim(),bed:$('#nbed').value.trim(),age:$('#nage').value.trim(),
+      sev:sv,news:+$('#nnews').value||0,dx:$('#ndx').value.trim(),
+      s_situation:$('#nsit').value.trim(),b_background:'',a_assessment:'',r_recommend:$('#nr').value.trim(),
+      vitals:[['HR','—','na'],['RR','—','na'],['SpO₂','—','na'],['MAP','—','na'],['T°','—','na']],
+      abx:{past:[],now:'None',esc:false},tasks:[],labs:[],notes:[],esc:null,flags:[]};
+    sel=p.bay;closeSheet();insertPatient(p);toast('Patient added');
+  };
+};
+
+document.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{document.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');filt=c.dataset.f;renderList();});
+
+/* ---------------- auth ---------------- */
+let authUser=null, gateMode='signin';
+const gEl={name:$('#fName'),email:$('#fEmail'),pass:$('#fPass'),invite:$('#fInvite'),
+  btn:$('#gateBtn'),hint:$('#gateHint'),title:$('#gateTitle'),sub:$('#gateSub'),swap:$('#gateSwap'),link:$('#swapLink')};
+
+function gateHint(msg,bad){ gEl.hint.textContent=msg||''; gEl.hint.style.color=bad?'var(--sick)':'var(--mut)'; }
+function setGateMode(m){
+  gateMode=m;
+  const signup = m==='signup';
+  gEl.name.style.display   = signup?'block':'none';
+  gEl.invite.style.display = signup?'block':'none';
+  gEl.pass.setAttribute('autocomplete', signup?'new-password':'current-password');
+  gEl.title.textContent = signup?'Create account':'Nigehbān';
+  gEl.sub.textContent   = signup?'Register your resident account to join the ward.':'Har shift, ek nigehbān — sign in with your resident email.';
+  gEl.btn.textContent   = signup?'Create account':'Sign in';
+  gEl.swap.innerHTML    = signup?'Already registered? <a id="swapLink">Sign in</a>':'New here? <a id="swapLink">Create an account</a>';
+  $('#swapLink').onclick = ()=>setGateMode(signup?'signin':'signup');
+  gateHint('');
+}
+gEl.link.onclick=()=>setGateMode('signup');
+
+async function doAuth(){
+  const email=gEl.email.value.trim(), pass=gEl.pass.value;
+  if(!email||!pass){ gateHint('Enter email and password.',true); return; }
+  gEl.btn.disabled=true; gEl.btn.style.opacity=.6;
+  try{
+    if(gateMode==='signup'){
+      if(gEl.invite.value.trim()!==CONFIG.WARD_INVITE){ gateHint('Wrong ward invite code.',true); return; }
+      const name=gEl.name.value.trim()||email;
+      const {data,error}=await db.auth.signUp({email,password:pass,options:{data:{full_name:name}}});
+      if(error)throw error;
+      if(data.session){ onSignedIn(data.session); }         // signups w/o email confirmation
+      else { gateHint('Account created. Check your email to confirm, then sign in.'); setGateMode('signin'); }
+    }else{
+      const {data,error}=await db.auth.signInWithPassword({email,password:pass});
+      if(error)throw error;
+      onSignedIn(data.session);
+    }
+  }catch(e){
+    gateHint(e.message||'Authentication failed.',true);
+  }finally{
+    gEl.btn.disabled=false; gEl.btn.style.opacity=1;
+  }
+}
+gEl.btn.onclick=doAuth;
+[gEl.email,gEl.pass,gEl.invite].forEach(i=>i.addEventListener('keydown',e=>{if(e.key==='Enter')doAuth();}));
+
+function onSignedIn(session){
+  authUser=session.user;
+  ME = (session.user.user_metadata && session.user.user_metadata.full_name) || session.user.email;
+  $('#gate').style.display='none'; $('#app').style.display='flex';
+  boot();
+}
+
+/* ---------------- startup ---------------- */
+(async function start(){
+  if(CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON && window.supabase){
+    db=window.supabase.createClient(CONFIG.SUPABASE_URL,CONFIG.SUPABASE_ANON);
+    setGateMode('signin');
+    const {data:{session}}=await db.auth.getSession();
+    if(session){ onSignedIn(session); }        // already logged in → skip gate
+    // else: show login gate (already visible)
+  }else{
+    // no keys → demo mode, no login required
+    setGateMode('signin');
+    $('#gate').style.display='none'; $('#app').style.display='flex';
+    ME='Demo user'; boot();
+  }
+})();
+</script>
+</body>
+</html>
