@@ -53,6 +53,33 @@ header{position:sticky;top:0;z-index:40;background:linear-gradient(180deg,#0a0f1
 .duty-chip.trainee .rd{background:var(--blue)}
 .duty-chip.me{border-color:var(--teal);background:#0e2b28;color:#a9f0e4}
 .dutybar .none{font-size:11.5px;color:var(--mut)}
+.sbarhist{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:9px 11px;margin-bottom:7px;font-size:12.5px}
+.sh-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.sh-field{font-weight:700;color:var(--teal);font-size:11px;text-transform:uppercase;letter-spacing:.4px}
+.sh-old{color:var(--mut);text-decoration:line-through;text-decoration-color:#5a3a44;margin-bottom:3px}
+.sh-new{color:var(--txt)}
+.sh-tag{font-size:9px;font-weight:800;padding:1px 5px;border-radius:5px;margin-right:5px;letter-spacing:.4px}
+.sh-old .sh-tag{background:#3a1820;color:#e58aa0}
+.sh-new .sh-tag{background:#123a2a;color:#7be0b0}
+.summary-btn{width:100%;background:linear-gradient(90deg,#12332c,#152538);border:1px solid #1f5346;color:#8fe9c4;border-radius:11px;padding:10px;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.2px}
+.summary-btn:active{transform:scale(.99)}
+.sum-sec{margin-bottom:14px}
+.sum-h{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--mut);margin-bottom:7px;display:flex;justify-content:space-between}
+.sum-h b{color:var(--teal)}
+.sum-item{display:flex;gap:8px;padding:7px 10px;background:var(--card2);border:1px solid var(--line);border-radius:9px;margin-bottom:5px;font-size:12.5px;align-items:flex-start}
+.sum-item .dot2{flex:0 0 7px;width:7px;height:7px;border-radius:50%;margin-top:4px}
+.sum-item .body2{flex:1;min-width:0}
+.sum-item .nm2{font-weight:600}
+.sum-item .meta2{font-size:10.5px;color:var(--mut);margin-top:1px}
+.sum-empty{color:var(--mut);font-size:12px;padding:4px 2px}
+.line.recur{background:#111f2e;border-color:#1c3350}
+.recur-ic{flex:0 0 auto;color:var(--blue);font-weight:800;font-size:14px}
+.freq{font-size:9.5px;font-weight:700;color:var(--blue);background:#0e2436;padding:1px 5px;border-radius:5px;margin-left:4px}
+.due{flex:0 0 auto;font-size:10.5px;font-weight:800;padding:3px 8px;border-radius:7px;cursor:pointer;letter-spacing:.2px}
+.due-ok{background:#123a2a;color:#7be0b0}
+.due-soon{background:#3a2c08;color:#f8d27a}
+.due-over{background:#3a0f18;color:#fb8fa3}
+.due-none{background:#1c2432;color:#8aa}
 
 .filters{display:flex;gap:6px;overflow-x:auto;padding:0 14px 10px;scrollbar-width:none}
 .filters::-webkit-scrollbar{display:none}
@@ -204,6 +231,46 @@ nav a .ni{font-size:17px}nav a.on{color:var(--teal)}
 .ci-bar{display:flex;align-items:center;gap:8px;background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:8px 11px;margin-bottom:8px;font-size:12.5px}
 .ci-bar .who{flex:1}.ci-bar .role{font-size:9.5px;font-weight:700;padding:1px 6px;border-radius:6px}
 .role.consultant{background:#2a1e40;color:#c4b0f0}.role.trainee{background:#0e2c3a;color:#7bc8e0}
+/* ============ DESKTOP (>=900px) ============ */
+@media(min-width:900px){
+  .app{max-width:1200px;padding-bottom:0}
+  header{padding:18px 28px 0}
+  .brand h1{font-size:20px}
+  .wm-ur{font-size:17px}
+  /* bays become a wrap row with more breathing room */
+  .bays{padding:14px 0 12px;gap:8px;flex-wrap:wrap}
+  .bay{font-size:14px;padding:9px 15px}
+  .dutybar{padding:0 28px}
+  .summary-btn{max-width:1200px;padding-left:0;padding-right:0}
+  #summaryBtnWrap{padding:10px 28px 0!important;max-width:1200px!important}
+  .filters{padding:0 28px 14px;flex-wrap:wrap}
+  main{padding:6px 28px 40px}
+  /* multi-column card board */
+  #list{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:12px;align-items:start}
+  .card{margin-bottom:0}
+  /* expanded card can span for readability */
+  .card.open{grid-column:1 / -1}
+  .card.open .body{columns:2;column-gap:24px}
+  .card.open .body > *{break-inside:avoid}
+  .card.open .escplan,.card.open .vitals{column-span:all}
+  /* nav becomes a top-right toolbar instead of bottom bar */
+  nav{position:static;max-width:none;margin:0;border-top:0;background:transparent;grid-template-columns:none;display:flex;gap:6px;padding:0}
+  .deskbar{display:flex;align-items:center;gap:8px}
+  nav a{flex-direction:row;gap:6px;font-size:12px;padding:8px 12px;border-radius:10px;background:var(--card);border:1px solid var(--line)}
+  nav a .ni{font-size:15px}
+  nav a.on{background:var(--teal-d);border-color:var(--teal);color:#eafffb}
+  .fab{bottom:28px;right:28px}
+  .fab button{width:58px;height:58px}
+  /* sheets become centered modals on desktop */
+  .scrim{align-items:center}
+  .sheet{max-width:560px;border-radius:18px;border-bottom:1px solid var(--line);max-height:88vh}
+  .vgrid{grid-template-columns:repeat(5,1fr)}
+}
+/* place bottom nav into header on desktop via order trick */
+@media(min-width:900px){
+  .app{display:flex;flex-direction:column}
+  header .brand{gap:18px}
+}
 </style>
 </head>
 <body>
@@ -258,6 +325,7 @@ const CONFIG = {
   </header>
 
   <div class="dutybar" id="dutybar"></div>
+  <div id="summaryBtnWrap" style="max-width:460px;margin:0 auto;padding:8px 14px 0"><button class="summary-btn" id="summaryBtn">📋 Shift handover summary</button></div>
   <div class="filters" id="filters">
     <div class="chip on" data-f="all">All</div>
     <div class="chip" data-f="sick">Sick <span class="c" id="sickN"></span></div>
@@ -318,7 +386,7 @@ DEMO.forEach(p=>{Object.assign(p,DEMO_VITALS[p.id],{score_auto:true});});
 // demo on-duty doctors (preview only)
 const DEMO_CHECKINS=[
   {id:101,resident_id:'demo-1',resident_name:'Dr Ali',role:'trainee',bay:'picu',shift_tag:'Morning',active:true},
-  {id:102,resident_id:'demo-2',resident_name:'Dr Umar Shafiq',role:'consultant',bay:'picu',shift_tag:'Morning',active:true},
+  {id:102,resident_id:'demo-2',resident_name:'Dr Umar Shafiq',role:'consultant',bay:'*',shift_tag:'Morning',active:true},
   {id:103,resident_id:'demo-3',resident_name:'Dr Sara',role:'trainee',bay:'hdu',shift_tag:'Morning',active:true},
 ];
 
@@ -347,6 +415,13 @@ function currentShift(){
   if(h>=7 && h<15) return 'Morning';
   if(h>=15 && h<21) return 'Evening';
   return 'Night';
+}
+// the calendar date a shift "belongs" to. Night runs 21:00–07:00; the
+// small-hours part (00:00–07:00) belongs to the previous day's Night.
+function shiftDate(){
+  const now=new Date(); const h=now.getHours(); const d=new Date(now);
+  if(h<7){ d.setDate(d.getDate()-1); }
+  return d.toISOString().slice(0,10); // YYYY-MM-DD
 }
 
 /* ============ SCORING ENGINE ============
@@ -440,12 +515,26 @@ async function boot(){
     setSync('demo','Demo mode — not saving');
     showBanner('Demo mode: paste your Supabase URL + anon key in the CONFIG block to go live.');
   }
-  renderBays(); renderList(); renderShift(); renderDuty();
+  renderBays(); renderList(); renderShift(); renderDuty(); applyLayout();
 }
+function applyLayout(){
+  const nav=document.querySelector('nav'); const brand=document.querySelector('header .brand');
+  if(!nav||!brand)return;
+  const wide=window.innerWidth>=900;
+  if(wide && nav.parentElement!==brand){
+    nav.classList.add('deskbar'); brand.appendChild(nav);
+  }else if(!wide && nav.parentElement===brand){
+    nav.classList.remove('deskbar'); document.querySelector('.app').appendChild(nav);
+  }
+}
+window.addEventListener('resize',()=>{ clearTimeout(window._lt); window._lt=setTimeout(applyLayout,150); });
 async function loadCheckins(){
   if(MODE!=='live')return;
-  try{ const {data}=await db.from('checkins').select('*').eq('active',true); CHECKINS=data||[]; }
-  catch(e){ CHECKINS=[]; }
+  try{
+    // clear anything left over from a previous shift, then load current
+    await db.rpc('expire_old_shift',{p_shift_tag:currentShift(),p_shift_date:shiftDate()});
+    const {data}=await db.from('checkins').select('*').eq('active',true); CHECKINS=data||[];
+  }catch(e){ CHECKINS=[]; }
 }
 let rtChannel=null, rtRetries=0, rtTimer=null;
 function subscribeRealtime(){
@@ -509,11 +598,14 @@ function currentOpenId(){ const c=document.querySelector('.card.open'); return c
 function reopen(id){ const c=$(`.card[data-id="${id}"]`); if(c)c.classList.add('open'); }
 function commit(p,silent){ renderBays(); renderList(); reopen(p.id); save(p); if(!silent)toast('Saved'); }
 
-function dutyIn(bayId){ return CHECKINS.filter(c=>c.bay===bayId && c.active!==false); }
+// doctors on duty in a bay = trainees checked into that bay + the ward-wide consultant ('*')
+function dutyIn(bayId){ return CHECKINS.filter(c=>c.active!==false && (c.bay===bayId || c.bay==='*')); }
+function traineesIn(bayId){ return CHECKINS.filter(c=>c.active!==false && c.bay===bayId && c.role!=='consultant'); }
+function wardConsultant(){ return CHECKINS.find(c=>c.active!==false && (c.role==='consultant' || c.bay==='*')); }
 function renderBays(){
   $('#bays').innerHTML=BAYS.map(b=>{
     const c=P.filter(p=>p.bay===b.id).length;
-    const d=dutyIn(b.id).length;
+    const d=traineesIn(b.id).length;   // bay badge counts trainees on that bay
     return `<div class="bay ${b.id===sel?'sel':''}" data-bay="${b.id}">${b.alert?'<span class="dot"></span>':''}${b.name}<span class="n">${c}</span>${d?`<span class="duty">👤${d}</span>`:''}</div>`;
   }).join('');
   document.querySelectorAll('.bay').forEach(el=>el.onclick=()=>{sel=el.dataset.bay;renderBays();renderList();renderDuty();});
@@ -521,14 +613,13 @@ function renderBays(){
 }
 function renderDuty(){
   const bar=$('#dutybar'); if(!bar)return;
-  const list=dutyIn(sel);
   const bayName=BAYS.find(b=>b.id===sel)?.name||sel;
-  if(!list.length){ bar.innerHTML=`<span class="lbl">On duty</span><span class="none">No one checked into ${bayName}</span>`; return; }
+  const cons=wardConsultant();
+  const trainees=traineesIn(sel);
+  if(!cons && !trainees.length){ bar.innerHTML=`<span class="lbl">On duty</span><span class="none">No one covering ${bayName}</span>`; return; }
+  const chip=c=>{const mine=(c.resident_id===MYUID);return `<span class="duty-chip ${c.role||'trainee'} ${mine?'me':''}"><span class="rd"></span>${c.resident_name||'—'}${c.role==='consultant'?' · ward cons':''}</span>`;};
   bar.innerHTML=`<span class="lbl">On duty · ${bayName}</span>`+
-    list.map(c=>{
-      const mine = (c.resident_id===MYUID);
-      return `<span class="duty-chip ${c.role||'trainee'} ${mine?'me':''}"><span class="rd"></span>${c.resident_name||'—'}${c.role==='consultant'?' ·&nbsp;cons':''}</span>`;
-    }).join('');
+    (cons?chip(cons):'')+ trainees.map(chip).join('');
 }
 function pass(p){
   if(filt==='all')return true;
@@ -558,7 +649,7 @@ function card(p){
     </div>
     <div class="body">
       <div class="divider"></div>
-      ${p.esc?`<div class="escplan"><span class="k"><b>If</b> ${p.esc.trigger}</span><span class="call">CALL ${p.esc.who}</span><span class="x" onclick="clearEsc(${p.id})">×</span></div>`:''}
+      ${p.esc?`<div class="escplan"><span class="k"><b>If</b> ${p.esc.trigger}${p.esc.action?` <b>→</b> ${p.esc.action}`:''}</span><span class="call">CALL ${p.esc.who}</span><span class="x" onclick="clearEsc(${p.id})">×</span></div>`:''}
       <div class="vitals">${(p.vitals||[]).map(v=>`<div class="v ${v[2]==='warn'?'warn':v[2]==='bad'?'bad':''}"><div class="vv">${v[1]}</div><div class="vl">${v[0]}</div></div>`).join('')}</div>
       <div class="sbar">
         <div class="srow"><div class="stag tS">S</div><div class="stxt">${p.s_situation||''}</div></div>
@@ -568,8 +659,9 @@ function card(p){
       </div>
       <div class="sec"><div class="sech">Antibiotics / support</div>${abx}</div>
       <div class="sec"><div class="sech">Tasks <em>${openT} open</em></div>
-        ${p.tasks.map((t,i)=>`<div class="line ${t.done?'done':''}"><div class="tick ${t.done?'done':''}" onclick="tick(${p.id},${i})">✓</div><span class="lt">${t.t}</span><span class="owner">${t.o||''}</span><span class="when">${t.w||''}</span></div>`).join('')}
-        <div class="qadd"><input placeholder="+ quick task…" id="qt${p.id}" onkeydown="if(event.key==='Enter')addTask(${p.id})"><button onclick="addTask(${p.id})">Add</button></div>
+        ${p.tasks.map((t,i)=>taskLine(p,t,i)).join('')}
+        <div class="qadd"><input placeholder="+ one-off task…" id="qt${p.id}" onkeydown="if(event.key==='Enter')addTask(${p.id})"><button onclick="addTask(${p.id})">Add</button></div>
+        <div class="qadd"><input placeholder="+ recurring, e.g. BSR monitoring" id="qr${p.id}" onkeydown="if(event.key==='Enter')addRecurring(${p.id})"><button onclick="addRecurring(${p.id})">↻ Add</button></div>
       </div>
       <div class="sec"><div class="sech">Labs — send / follow</div>
         ${p.labs.map((l,i)=>`<div class="line" onclick="toggleLab(${p.id},${i})"><span class="lt">${l.t}</span>${l.s==='pending'?'<span class="follow">FOLLOW ●</span>':'<span class="result">RESULT</span>'}<span class="when">${l.w||''}</span></div>`).join('')}
@@ -594,6 +686,34 @@ function renderList(){
 window.toggle=id=>$(`.card[data-id="${id}"]`).classList.toggle('open');
 window.tick=(id,i)=>{const p=byId(id);p.tasks[i].done=!p.tasks[i].done;commit(p,true);};
 window.addTask=id=>{const el=$(`#qt${id}`);const v=el.value.trim();if(!v)return;const p=byId(id);p.tasks.push({t:v,w:stamp(),o:shortMe(),done:false});commit(p);};
+// recurring / continuous tasks
+function fmtDue(t){
+  if(!t.last)return {txt:'not started',cls:'due-none'};
+  const last=new Date(t.last); const next=new Date(last.getTime()+(t.freq||4)*3600000);
+  const mins=Math.round((next-Date.now())/60000);
+  const hhmm=next.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+  if(mins<0)return {txt:'DUE (was '+hhmm+')',cls:'due-over'};
+  if(mins<30)return {txt:'due '+hhmm,cls:'due-soon'};
+  return {txt:'next '+hhmm,cls:'due-ok'};
+}
+function taskLine(p,t,i){
+  if(t.recurring){
+    const d=fmtDue(t);
+    const lastTxt=t.last?('last '+new Date(t.last).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})):'—';
+    return `<div class="line recur"><span class="recur-ic">↻</span><span class="lt">${t.t} <span class="freq">q${t.freq||4}h</span></span><span class="when">${lastTxt}</span><span class="due ${d.cls}" onclick="logRecurring(${p.id},${i})">${d.txt}</span></div>`;
+  }
+  return `<div class="line ${t.done?'done':''}"><div class="tick ${t.done?'done':''}" onclick="tick(${p.id},${i})">✓</div><span class="lt">${t.t}</span><span class="owner">${t.o||''}</span><span class="when">${t.w||''}</span></div>`;
+}
+window.addRecurring=id=>{
+  const el=$(`#qr${id}`);const v=el.value.trim();if(!v)return;
+  const p=byId(id);
+  // default 4-hourly; let them pick freq quickly via prompt-like pills next time. store minimal now.
+  p.tasks.push({t:v,recurring:true,freq:4,last:null,o:shortMe()});
+  commit(p);toast('Recurring task added (tap "log" each time it\'s done)');
+};
+window.logRecurring=(id,i)=>{
+  const p=byId(id);const t=p.tasks[i];t.last=new Date().toISOString();commit(p,true);toast(t.t+' logged '+stamp());
+};
 window.addLab=id=>{const el=$(`#ql${id}`);const v=el.value.trim();if(!v)return;const p=byId(id);p.labs.unshift({t:v,s:'pending',w:'sent '+stamp()});if(!p.flags.includes('lab'))p.flags.push('lab');commit(p);toast(v+' → Labs tab');};
 window.toggleLab=(id,i)=>{const p=byId(id);const l=p.labs[i];l.s=l.s==='pending'?'result':'pending';l.w=l.s==='result'?'back '+stamp():'follow';if(!p.labs.some(x=>x.s==='pending'))p.flags=p.flags.filter(f=>f!=='lab');else if(!p.flags.includes('lab'))p.flags.push('lab');commit(p,true);};
 window.focusNote=id=>{const b=$(`#notebox${id}`);b.style.display='flex';$(`#qn${id}`).focus();};
@@ -608,18 +728,34 @@ scrim.onclick=e=>{if(e.target===scrim)closeSheet();};
 
 window.openEsc=id=>{
   const p=byId(id);
-  const trg=['SpO₂ < 90%','↑ inotrope / MAP drop','New apnoea','Rising lactate','HR outside range','Not improving'];
-  const who=['SR','Consultant','PICU','Airway'];
-  showSheet(`<h3>Escalation plan</h3><div class="sub"><b>${p.name}</b> · ${p.bed} — when to act, who to call</div>
-    <div class="field"><label>Escalate if… (pick one, or type your own below)</label><div class="pillrow" id="tp">${trg.map(t=>`<div class="pill" data-t="${t}">${t}</div>`).join('')}</div></div>
-    <div class="field"><label>✏️ Custom trigger</label><input id="tc" placeholder="Type any threshold, e.g. UO < 1 ml/kg/hr × 2h, or GCS drop"></div>
-    <div class="field"><label>Then call</label><div class="pillrow" id="wp">${who.map(w=>`<div class="pill" data-w="${w}">${w}</div>`).join('')}</div></div>
-    <button class="go" id="de" disabled style="opacity:.5">Set plan</button><button class="go ghost" onclick="closeSheet()">Cancel</button>`);
-  let tg=null,cl=null;const rf=()=>{const ok=(tg||$('#tc').value.trim())&&cl;$('#de').disabled=!ok;$('#de').style.opacity=ok?1:.5;};
-  document.querySelectorAll('#tp .pill').forEach(x=>x.onclick=()=>{document.querySelectorAll('#tp .pill').forEach(y=>y.classList.remove('sel'));x.classList.add('sel');tg=x.dataset.t;$('#tc').value='';rf();});
+  const trg=['SpO₂ < 90%','BP / MAP drop','New apnoea','Rising lactate','HR outside range','Reduced GCS','Not improving'];
+  const acts=['Start / increase O₂','Fluid bolus 20 ml/kg','Start / titrate inotrope','Airway support','Give stat dose','Review at bedside now'];
+  const who=['SR','Consultant','PICU','Anaesthesia / airway','Outreach team'];
+  const e=p.esc||{};
+  showSheet(`<h3>Escalation plan</h3><div class="sub"><b>${p.name}</b> · ${p.bed} — <b>if this happens → do this → call them</b></div>
+
+    <div class="sech" style="margin-bottom:8px">1 · Escalate IF…</div>
+    <div class="pillrow" id="tp">${trg.map(t=>`<div class="pill ${e.trigger===t?'sel':''}" data-t="${t}">${t}</div>`).join('')}</div>
+    <div class="field" style="margin-top:8px"><label>✏️ or custom trigger</label><input id="tc" value="${(e.trigger&&!trg.includes(e.trigger))?e.trigger.replace(/"/g,'&quot;'):''}" placeholder="e.g. UO < 1 ml/kg/hr × 2h"></div>
+
+    <div class="sech" style="margin:10px 0 8px">2 · DO this (immediate action)</div>
+    <div class="pillrow" id="ap">${acts.map(a=>`<div class="pill ${e.action===a?'sel':''}" data-a="${a}">${a}</div>`).join('')}</div>
+    <div class="field" style="margin-top:8px"><label>✏️ or custom action</label><input id="ac" value="${(e.action&&!acts.includes(e.action))?e.action.replace(/"/g,'&quot;'):''}" placeholder="e.g. start CPAP, recheck gas in 30 min"></div>
+
+    <div class="sech" style="margin:10px 0 8px">3 · CALL</div>
+    <div class="pillrow" id="wp">${who.map(w=>`<div class="pill ${e.who===w?'sel':''}" data-w="${w}">${w}</div>`).join('')}</div>
+
+    <button class="go" id="de" style="margin-top:12px">Set plan</button>
+    ${p.esc?`<button class="go ghost" onclick="clearEsc(${id})">Clear plan</button>`:''}
+    <button class="go ghost" onclick="closeSheet()">Cancel</button>`);
+  let tg=e.trigger||null,ac=e.action||null,cl=e.who||null;
+  const rf=()=>{const ok=(tg||$('#tc').value.trim())&&(ac||$('#ac').value.trim())&&cl;$('#de').disabled=!ok;$('#de').style.opacity=ok?1:.5;};
+  const wire=(sel,attr,setv,clearInput)=>document.querySelectorAll(sel+' .pill').forEach(x=>x.onclick=()=>{document.querySelectorAll(sel+' .pill').forEach(y=>y.classList.remove('sel'));x.classList.add('sel');setv(x.dataset[attr]);if(clearInput)$(clearInput).value='';rf();});
+  wire('#tp','t',v=>tg=v,'#tc'); wire('#ap','a',v=>ac=v,'#ac'); wire('#wp','w',v=>cl=v,null);
   $('#tc').oninput=()=>{document.querySelectorAll('#tp .pill').forEach(y=>y.classList.remove('sel'));tg=null;rf();};
-  document.querySelectorAll('#wp .pill').forEach(x=>x.onclick=()=>{document.querySelectorAll('#wp .pill').forEach(y=>y.classList.remove('sel'));x.classList.add('sel');cl=x.dataset.w;rf();});
-  $('#de').onclick=()=>{p.esc={trigger:tg||$('#tc').value.trim(),who:cl};closeSheet();commit(p);toast('Escalation set');};
+  $('#ac').oninput=()=>{document.querySelectorAll('#ap .pill').forEach(y=>y.classList.remove('sel'));ac=null;rf();};
+  rf();
+  $('#de').onclick=()=>{p.esc={trigger:tg||$('#tc').value.trim(),action:ac||$('#ac').value.trim(),who:cl};closeSheet();commit(p);toast('Escalation set');};
 };
 window.openShift=id=>{
   const p=byId(id);const opts=BAYS.filter(b=>b.id!==p.bay).map(b=>`<div class="pill" data-to="${b.id}">${b.name}</div>`).join('');
@@ -770,27 +906,110 @@ async function fetchLog(patientId){
   if(error){toast('Log load failed',true);return [];}
   return data;
 }
+async function fetchSbarHistory(patientId){
+  if(MODE!=='live')return [];
+  const {data,error}=await db.from('sbar_history').select('*').eq('patient_id',patientId).order('at',{ascending:false}).limit(80);
+  if(error)return [];
+  return data;
+}
+function renderSbarRows(rows){
+  if(!rows.length)return '<div class="empty">No SBAR edits recorded yet.</div>';
+  const lbl={dx:'Diagnosis',s:'S · Situation',b:'B · Background',a:'A · Assessment',r:'R · Recommendation'};
+  return rows.map(r=>{
+    const t=new Date(r.at).toLocaleString([], {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+    return `<div class="sbarhist">
+      <div class="sh-top"><span class="sh-field">${lbl[r.field]||r.field}</span><span class="logat">${t}${r.shift_tag?' · '+r.shift_tag:''}</span></div>
+      ${r.old_text?`<div class="sh-old"><span class="sh-tag">was</span> ${r.old_text}</div>`:'<div class="sh-old"><span class="sh-tag">was</span> <em>empty</em></div>'}
+      <div class="sh-new"><span class="sh-tag">now</span> ${r.new_text||'<em>empty</em>'}</div>
+      <div class="logby">by <b>${r.changed_by||'unknown'}</b></div>
+    </div>`;
+  }).join('');
+}
 window.openLog=async(patientId)=>{
   const title=patientId?('History — '+(byId(patientId)?.name||'patient')):'Ward history';
-  showSheet(`<h3>${title}</h3><div class="sub">Every change, who made it, when — recorded by the database.</div><div id="logbox"><div class="empty">Loading…</div></div><button class="go ghost" onclick="closeSheet()">Close</button>`);
-  if(MODE!=='live'){ $('#logbox').innerHTML='<div class="empty">Audit trail is live only. Add your Supabase keys and run audit.sql to enable history.</div>'; return; }
+  const tabs = patientId?`<div class="logfilters"><div class="chip on" id="lt_all" onclick="logTab('all',${patientId})">All changes</div><div class="chip" id="lt_sbar" onclick="logTab('sbar',${patientId})">SBAR edits (before/after)</div></div>`:'';
+  showSheet(`<h3>${title}</h3><div class="sub">Every change, who made it, when — recorded by the database.</div>${tabs}<div id="logbox"><div class="empty">Loading…</div></div><button class="go ghost" onclick="closeSheet()">Close</button>`);
+  if(MODE!=='live'){ $('#logbox').innerHTML='<div class="empty">History is live only. Add your Supabase keys and run the SQL migrations to enable it.</div>'; return; }
   const rows=await fetchLog(patientId);
   $('#logbox').innerHTML=renderLogRows(rows);
 };
+window.logTab=async(which,patientId)=>{
+  $('#lt_all').classList.toggle('on',which==='all');
+  $('#lt_sbar').classList.toggle('on',which==='sbar');
+  $('#logbox').innerHTML='<div class="empty">Loading…</div>';
+  if(which==='sbar'){ const rows=await fetchSbarHistory(patientId); $('#logbox').innerHTML=renderSbarRows(rows); }
+  else { const rows=await fetchLog(patientId); $('#logbox').innerHTML=renderLogRows(rows); }
+};
 $('#navLog').onclick=()=>openLog(null);
+
+/* ===== Handover summary for the incoming doctor ===== */
+function shiftStartISO(){
+  // start of the current shift window
+  const now=new Date(); const h=now.getHours(); const d=new Date(now);
+  let sh;
+  if(h>=7&&h<15)sh=7; else if(h>=15&&h<21)sh=15; else sh=21;
+  if(h<7){ d.setDate(d.getDate()-1); sh=21; }  // early morning belongs to last night's shift
+  d.setHours(sh,0,0,0);
+  return d.toISOString();
+}
+$('#summaryBtn').onclick=async()=>{
+  const sickList=P.filter(p=>p.sev==='sick').sort((a,b)=>b.news-a.news);
+  const escList=P.filter(p=>p.esc);
+  const openTasks=[]; P.forEach(p=>p.tasks.filter(t=>!t.done).forEach(t=>openTasks.push({p,t})));
+  const pendLabs=[]; P.forEach(p=>p.labs.filter(l=>l.s==='pending').forEach(l=>pendLabs.push({p,l})));
+  const toShift=P.filter(p=>p.flags.includes('shift'));
+  const bn=id=>BAYS.find(b=>b.id===id)?.name||id;
+
+  let recent='<div class="sum-empty">Live changes appear here once connected to Supabase.</div>';
+  const body=(list,render)=> list.length?list.map(render).join(''):'<div class="sum-empty">None.</div>';
+
+  showSheet(`<h3>Shift handover</h3><div class="sub">${SHIFT||currentShift()} shift · ${P.length} patients · for the incoming team</div>
+
+    <div class="sum-sec"><div class="sum-h">🔴 Sick / high acuity <b>${sickList.length}</b></div>
+      ${body(sickList,p=>`<div class="sum-item"><span class="dot2" style="background:var(--sick)"></span><div class="body2"><div class="nm2">${p.name} · ${bn(p.bay)} ${p.bed||''}</div><div class="meta2">${p.dx||''} · ${p.score_system} ${p.news}</div></div></div>`)}</div>
+
+    <div class="sum-sec"><div class="sum-h">⬆️ Active escalation plans <b>${escList.length}</b></div>
+      ${body(escList,p=>`<div class="sum-item"><span class="dot2" style="background:var(--sick)"></span><div class="body2"><div class="nm2">${p.name} · ${bn(p.bay)}</div><div class="meta2">If ${p.esc.trigger}${p.esc.action?' → '+p.esc.action:''} → call ${p.esc.who}</div></div></div>`)}</div>
+
+    <div class="sum-sec"><div class="sum-h">☐ Outstanding tasks <b>${openTasks.length}</b></div>
+      ${body(openTasks,({p,t})=>`<div class="sum-item"><span class="dot2" style="background:var(--violet)"></span><div class="body2"><div class="nm2">${t.t}</div><div class="meta2">${p.name} · ${bn(p.bay)} · ${t.w||''}</div></div></div>`)}</div>
+
+    <div class="sum-sec"><div class="sum-h">🧪 Labs to follow <b>${pendLabs.length}</b></div>
+      ${body(pendLabs,({p,l})=>`<div class="sum-item"><span class="dot2" style="background:var(--watch)"></span><div class="body2"><div class="nm2">${l.t}</div><div class="meta2">${p.name} · ${bn(p.bay)} · ${l.w||''}</div></div></div>`)}</div>
+
+    <div class="sum-sec"><div class="sum-h">🔀 Awaiting transfer <b>${toShift.length}</b></div>
+      ${body(toShift,p=>`<div class="sum-item"><span class="dot2" style="background:var(--stable)"></span><div class="body2"><div class="nm2">${p.name} · ${bn(p.bay)}</div><div class="meta2">${p.r_recommend||'flagged to shift'}</div></div></div>`)}</div>
+
+    <div class="sum-sec"><div class="sum-h">🕓 Changed this shift</div><div id="sumRecent">${recent}</div></div>
+    <button class="go ghost" onclick="closeSheet()">Close</button>`);
+
+  if(MODE==='live'){
+    try{
+      const {data}=await db.from('audit_log').select('*').gte('at',shiftStartISO()).order('at',{ascending:false}).limit(40);
+      $('#sumRecent').innerHTML = (data&&data.length)
+        ? data.map(r=>`<div class="sum-item"><span class="dot2" style="background:var(--blue)"></span><div class="body2"><div class="nm2">${r.patient_name||'—'}</div><div class="meta2">${r.detail||r.action} · ${new Date(r.at).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})} · ${r.changed_by||''}</div></div></div>`).join('')
+        : '<div class="sum-empty">No changes recorded yet this shift.</div>';
+    }catch(e){ $('#sumRecent').innerHTML='<div class="sum-empty">Could not load recent changes.</div>'; }
+  }
+};
 
 $('#navMe').onclick=async()=>{
   const acct = MODE==='live' ? (ME+'  ·  signed in') : 'Demo mode';
-  let ci=null;
-  if(MODE==='live'){ ci = await myCheckin(); }
-  else { ci = CHECKINS.find(c=>c.resident_id==='me')||null; }
+  const ci = await myCheckin();
+  const where = ci ? (ci.bay==='*' ? 'Ward (all bays)' : (BAYS.find(b=>b.id===ci.bay)?.name||ci.bay)) : null;
   const ciHtml = ci
-    ? `<div class="ci-bar"><span class="who">Checked into <b>${BAYS.find(b=>b.id===ci.bay)?.name||ci.bay}</b> · ${ci.shift_tag}</span><span class="pill sel" style="padding:5px 10px" onclick="checkOut(${ci.id})">Check out</span></div>`
-    : `<div class="ci-bar"><span class="who" style="color:var(--mut)">Not checked in to any bay</span></div>`;
+    ? `<div class="ci-bar"><span class="who">On duty · <b>${where}</b> · ${ci.shift_tag}</span><span class="pill sel" style="padding:5px 10px" onclick="checkOut(${ci.id})">Check out</span></div>`
+    : `<div class="ci-bar"><span class="who" style="color:var(--mut)">Not checked in</span></div>`;
+  const checkinUI = ROLE==='consultant'
+    ? `<div class="field"><label>Consultant covers the whole ward this shift</label>
+         <button class="go" style="margin-top:0" onclick="checkIn('*')">${ci?'Re-check in':'Check in'} as ward consultant · ${SHIFT||currentShift()}</button></div>`
+    : `<div class="field"><label>Check into your bay · ${SHIFT||currentShift()}</label>
+         <div class="pillrow" id="ciBays">${BAYS.map(b=>`<div class="pill ${ci&&ci.bay===b.id?'sel':''}" data-bay="${b.id}">${b.name}</div>`).join('')}</div>
+         <div class="sp-mut" style="font-size:10.5px;margin-top:6px">If another trainee is in that bay, you'll take over (they're checked out).</div></div>`;
   showSheet(`<h3>Account</h3><div class="sub">Mode: <b>${MODE==='live'?'Live':'Demo'}</b> · Role: <b>${ROLE}</b> · Shift: <b>${SHIFT||currentShift()}</b></div>
     <div class="field"><label>Signed in as</label><input value="${acct}" disabled style="opacity:.7"></div>
     <div class="sech" style="margin:4px 0 8px">Duty check-in</div>${ciHtml}
-    <div class="field"><label>Check into a bay</label><div class="pillrow" id="ciBays">${BAYS.map(b=>`<div class="pill ${ci&&ci.bay===b.id?'sel':''}" data-bay="${b.id}">${b.name}</div>`).join('')}</div></div>
+    ${checkinUI}
     <div class="field"><label>Display name</label><input id="myname" value="${ME}"></div>
     <button class="go" onclick="setMe()">Update display name</button>
     ${ROLE==='consultant'&&MODE==='live'?`<button class="go ghost" onclick="openWardSettings()">⚙ Ward settings (location gate)</button>`:''}
@@ -798,31 +1017,43 @@ $('#navMe').onclick=async()=>{
   document.querySelectorAll('#ciBays .pill').forEach(x=>x.onclick=()=>checkIn(x.dataset.bay));
 };
 async function myCheckin(){
-  if(MODE!=='live')return null;
+  if(MODE!=='live') return CHECKINS.find(c=>c.resident_id===(MYUID||'me') && c.active!==false)||null;
   try{ const {data}=await db.from('checkins').select('*').eq('resident_id',MYUID).eq('active',true).maybeSingle(); return data; }
   catch(e){ return null; }
 }
 window.checkIn=async(bay)=>{
+  const shift=(SHIFT||currentShift());
   if(MODE!=='live'){
-    // demo: single check-in, in-memory
-    CHECKINS=CHECKINS.filter(c=>c.resident_id!=='me');
-    CHECKINS.push({id:Date.now(),resident_id:'me',resident_name:ME,role:ROLE,bay,shift_tag:(SHIFT||currentShift()),active:true});
-    MYUID='me'; sel=bay; closeSheet(); renderBays(); renderDuty(); toast('Checked into '+(BAYS.find(b=>b.id===bay)?.name||bay));
-    return;
+    // demo mirror of server rules
+    MYUID='me';
+    CHECKINS=CHECKINS.filter(c=>c.resident_id!=='me');           // clear my own
+    if(ROLE==='consultant'){
+      CHECKINS=CHECKINS.filter(c=>c.role!=='consultant');        // one consultant/shift
+      CHECKINS.push({id:Date.now(),resident_id:'me',resident_name:ME,role:'consultant',bay:'*',shift_tag:shift,active:true});
+      toast('Checked in as ward consultant ('+shift+')');
+    }else{
+      CHECKINS=CHECKINS.filter(c=>!(c.role!=='consultant' && c.bay===bay)); // hand off other trainee in this bay
+      CHECKINS.push({id:Date.now(),resident_id:'me',resident_name:ME,role:'trainee',bay,shift_tag:shift,active:true});
+      sel=bay; toast('Checked into '+(BAYS.find(b=>b.id===bay)?.name||bay));
+    }
+    closeSheet(); renderBays(); renderDuty(); return;
   }
   try{
     const {data:ws}=await db.from('ward_settings').select('*').eq('id',1).single();
+    let lat=null,lng=null;
     if(ws && ws.geo_gate && ws.lat!=null){
       const pos=await getPos();
       if(!pos){ toast('Location needed to check in',true); return; }
       const d=distM(pos.lat,pos.lng,+ws.lat,+ws.lng);
       if(d>(ws.radius_m||300)){ toast(`Too far from ward (${Math.round(d)}m) to check in`,true); return; }
-    }
-    await db.from('checkins').update({active:false}).eq('resident_id',MYUID).eq('active',true);
-    let lat=null,lng=null; const pos=await getPos().catch(()=>null); if(pos){lat=pos.lat;lng=pos.lng;}
-    const {error}=await db.from('checkins').insert({resident_id:MYUID,resident_name:ME,role:ROLE,bay,shift_tag:(SHIFT||currentShift()),lat,lng,active:true});
+      lat=pos.lat; lng=pos.lng;
+    } else { const pos=await getPos().catch(()=>null); if(pos){lat=pos.lat;lng=pos.lng;} }
+    // server handles consultant vs trainee + hand-off + shift stamping
+    const {error}=await db.rpc('check_in',{p_bay:bay,p_shift_tag:shift,p_shift_date:shiftDate(),p_lat:lat,p_lng:lng});
     if(error){ toast('Check-in failed: '+error.message,true); return; }
-    sel=bay; await loadCheckins(); closeSheet(); renderBays(); renderDuty(); toast('Checked into '+(BAYS.find(b=>b.id===bay)?.name||bay));
+    if(ROLE!=='consultant')sel=bay;
+    await loadCheckins(); closeSheet(); renderBays(); renderDuty();
+    toast(ROLE==='consultant'?('Checked in as ward consultant ('+shift+')'):('Checked into '+(BAYS.find(b=>b.id===bay)?.name||bay)));
   }catch(e){ toast('Check-in error',true); }
 };
 window.checkOut=async(cid)=>{
