@@ -256,6 +256,15 @@ nav a .ni{font-size:17px}nav a.on{color:var(--teal)}
 .ros-bay{font-weight:700;width:80px;flex:0 0 auto}
 .ros-docs{flex:1;color:var(--dim)}
 .ros-gap{color:var(--sick);font-weight:700}
+.vbadge{background:var(--watch);color:#241a00;font-size:11px;font-weight:800;padding:0 7px;border-radius:10px;margin-left:5px}
+.verify-note{background:var(--card2);border:1px solid var(--line);border-radius:11px;padding:11px 13px;font-size:12px;color:var(--dim);margin-bottom:12px;line-height:1.45}
+.verify-note b{color:var(--txt)}
+.verify-item{background:#241c08;border:1px solid #5a4410;border-radius:12px;padding:12px 14px;margin-bottom:9px}
+.vi-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.vi-who{font-weight:800;color:#f8d27a;font-size:15px}
+.vi-bay{font-size:11px;color:#c9a94e;font-weight:700}
+.vi-reason{font-size:13px;color:#f4e2b0;line-height:1.4}
+.vi-act{font-size:11.5px;color:#c9a94e;margin-top:6px;font-style:italic}
 .role.consultant{background:#2a1e40;color:#c4b0f0}.role.trainee{background:#0e2c3a;color:#7bc8e0}
 /* ============ DESKTOP (>=900px) ============ */
 @media(min-width:900px){
@@ -1086,6 +1095,66 @@ $('#navLog').onclick=()=>openLog(null);
 
 /* ===== Consultant portal (live) ===== */
 const bn=id=>BAYS.find(b=>b.id===id)?.name||id;
+
+/* ===== Identity-verification signals (NEUTRAL prompts, not accusations) =====
+   The app knows the account, not the person. These flag patterns a consultant
+   may want to eyeball — nothing here proves misuse. */
+async function verifySignals(){
+  let rows=[];
+  if(MODE==='live'){
+    try{ const {data}=await db.rpc('recent_checkins'); rows=data||[]; }catch(e){ rows=[]; }
+  } else {
+    rows=(window.DEMO_VERIFY||[]);
+  }
+  const flags=[];
+  const radius=(WARD_GEO&&WARD_GEO.radius_m)||300;
+  const geoOn=WARD_GEO&&WARD_GEO.geo_gate&&WARD_GEO.lat!=null;
+  const active=rows.filter(r=>r.active);
+
+  // 1) NEW DEVICE
+  active.forEach(a=>{
+    if(!a.device_id)return;
+    const priors=rows.filter(r=>r.resident_id===a.resident_id && r.id!==a.id);
+    if(priors.length>0 && !priors.some(r=>r.device_id===a.device_id)){
+      flags.push({who:a.resident_name,bay:a.bay,reason:'New device for this account (first check-in from this phone).'});
+    }
+  });
+  // 2) LOCATION MISMATCH
+  if(geoOn){
+    active.forEach(a=>{
+      if(a.lat==null)return;
+      const d=distM(+a.lat,+a.lng,+WARD_GEO.lat,+WARD_GEO.lng);
+      if(d>radius) flags.push({who:a.resident_name,bay:a.bay,reason:`Checked in ${Math.round(d)}m from the ward (outside the ${radius}m range).`});
+    });
+  }
+  // 3) IMPOSSIBLE MOVEMENT (>1km in <10min, same account)
+  const byRes={};
+  rows.forEach(r=>{ if(r.lat!=null){ (byRes[r.resident_id]=byRes[r.resident_id]||[]).push(r); } });
+  Object.values(byRes).forEach(list=>{
+    list.sort((a,b)=>new Date(a.at)-new Date(b.at));
+    for(let i=1;i<list.length;i++){
+      const a=list[i-1],b=list[i];
+      const km=distM(+a.lat,+a.lng,+b.lat,+b.lng)/1000;
+      const mins=(new Date(b.at)-new Date(a.at))/60000;
+      if(km>1 && mins<10){ flags.push({who:b.resident_name,bay:b.bay,reason:`Two check-ins ${km.toFixed(1)}km apart within ${Math.round(mins)} min — confirm same person.`}); break; }
+    }
+  });
+  // 4) SHARED DEVICE (2+ accounts, one device, <15min)
+  const byDev={};
+  rows.forEach(r=>{ if(r.device_id){ (byDev[r.device_id]=byDev[r.device_id]||[]).push(r); } });
+  Object.values(byDev).forEach(list=>{
+    list.sort((a,b)=>new Date(a.at)-new Date(b.at));
+    for(let i=1;i<list.length;i++){
+      const a=list[i-1],b=list[i];
+      const mins=(new Date(b.at)-new Date(a.at))/60000;
+      if(a.resident_id!==b.resident_id && mins<15){
+        flags.push({who:b.resident_name,bay:b.bay,reason:`Same phone used by ${a.resident_name} then ${b.resident_name} within ${Math.round(mins)} min.`});
+        break;
+      }
+    }
+  });
+  const seen=new Set(); return flags.filter(f=>{const k=f.who+'|'+f.reason;if(seen.has(k))return false;seen.add(k);return true;});
+}
 function portalData(){
   const sick=P.filter(p=>p.sev==='sick').sort((a,b)=>b.news-a.news);
   const esc=P.filter(p=>p.esc);
@@ -1130,16 +1199,28 @@ window.openPortal=async()=>{
       <div class="chip" data-pv="esc" onclick="portalTab('esc')">Escalations</div>
       <div class="chip" data-pv="roster" onclick="portalTab('roster')">Roster</div>
       <div class="chip" data-pv="tasks" onclick="portalTab('tasks')">Tasks & labs</div>
+      <div class="chip" data-pv="verify" onclick="portalTab('verify')">Verify <span id="verifyBadge" class="vbadge" style="display:none">0</span></div>
     </div>
     <div id="pv-overview">${overview}</div>
     <div id="pv-esc" style="display:none">${escView}</div>
     <div id="pv-roster" style="display:none">${rosterView}</div>
     <div id="pv-tasks" style="display:none">${tasksView}</div>
+    <div id="pv-verify" style="display:none"><div class="sum-empty">Checking sign-in patterns…</div></div>
     ${MODE!=='live'?'<div class="sum-empty" style="margin-top:8px">Demo data — connect Supabase for live ward figures.</div>':''}
     <button class="go ghost" onclick="closeSheet()">Close</button>`);
+  // load identity-verification signals asynchronously
+  verifySignals().then(flags=>{
+    const box=$('#pv-verify'); if(!box)return;
+    const badge=$('#verifyBadge');
+    if(badge && flags.length){ badge.style.display='inline-block'; badge.textContent=flags.length; }
+    box.innerHTML=`
+      <div class="verify-note">These are <b>prompts to verify</b>, not accusations. The app records which <i>account</i> checked in, not who was holding the phone. Use your judgement.</div>
+      ${flags.length? flags.map(f=>`<div class="verify-item"><div class="vi-top"><span class="vi-who">${f.who||'—'}</span><span class="vi-bay">${bn(f.bay)}</span></div><div class="vi-reason">${f.reason}</div><div class="vi-act">Consider a quick verbal check with the doctor.</div></div>`).join('')
+        : '<div class="sum-empty">Nothing to verify — all check-ins look normal.</div>'}`;
+  });
 };
 window.portalTab=(v)=>{
-  ['overview','esc','roster','tasks'].forEach(x=>{$('#pv-'+x).style.display=x===v?'block':'none';});
+  ['overview','esc','roster','tasks','verify'].forEach(x=>{$('#pv-'+x).style.display=x===v?'block':'none';});
   document.querySelectorAll('.logfilters .chip[data-pv]').forEach(c=>c.classList.toggle('on',c.dataset.pv===v));
 };
 $('#navPortal').onclick=openPortal;
@@ -1251,7 +1332,7 @@ window.checkIn=async(bay)=>{
       lat=pos.lat; lng=pos.lng;
     } else { const pos=await getPos().catch(()=>null); if(pos){lat=pos.lat;lng=pos.lng;} }
     // server handles consultant vs trainee + hand-off + shift stamping
-    const {error}=await db.rpc('check_in',{p_bay:bay,p_shift_tag:shift,p_shift_date:shiftDate(),p_lat:lat,p_lng:lng});
+    const {error}=await db.rpc('check_in',{p_bay:bay,p_shift_tag:shift,p_shift_date:shiftDate(),p_lat:lat,p_lng:lng,p_device_id:deviceId(),p_user_agent:shortUA()});
     if(error){ toast('Check-in failed: '+error.message,true); return; }
     if(ROLE!=='consultant')sel=bay;
     await loadCheckins(); closeSheet(); renderBays(); renderList(); renderDuty();
@@ -1265,6 +1346,16 @@ window.checkOut=async(cid)=>{
   await loadCheckins(); closeSheet(); renderBays(); renderList(); renderDuty(); toast('Checked out');
 };
 function getPos(){ return new Promise(res=>{ if(!navigator.geolocation)return res(null); navigator.geolocation.getCurrentPosition(p=>{LAST_POS={lat:p.coords.latitude,lng:p.coords.longitude,at:Date.now()};res(LAST_POS);},()=>res(null),{timeout:8000,enableHighAccuracy:true}); }); }
+// stable per-device id (persists in this browser). Used only to flag
+// "new device" / "shared device" for identity verification — never to track.
+function deviceId(){
+  try{
+    let d=localStorage.getItem('nig_device');
+    if(!d){ d='dev_'+Math.random().toString(36).slice(2)+Date.now().toString(36); localStorage.setItem('nig_device',d); }
+    return d;
+  }catch(e){ return 'dev_unknown'; }
+}
+function shortUA(){ const u=navigator.userAgent||''; const m=u.match(/(iPhone|iPad|Android|Windows|Macintosh|Linux)[^;)]*/); return (m?m[0]:'device').slice(0,40); }
 // how far the doctor currently is from the ward (metres), or null if unknown/off
 function wardDistance(){
   if(!WARD_GEO || !WARD_GEO.geo_gate || WARD_GEO.lat==null || !LAST_POS) return null;
