@@ -384,6 +384,7 @@ const stamp=()=>new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit
 let db=null, MODE='demo', P=[], sel='picu', filt='all', ME='Dr Ali', ROLE='trainee', SHIFT=null, MYUID=null, CHECKINS=[], WARD_GEO=null, LAST_POS=null;
 
 const BAYS=[
+  {id:'emergency',name:'Emergency',alert:true},
   {id:'measles',name:'Measles',alert:true},{id:'general',name:'General'},
   {id:'hdu',name:'HDU',alert:true},{id:'nursery',name:'Nursery'},
   {id:'picu',name:'PICU',alert:true},{id:'nicu',name:'NICU'},
@@ -807,21 +808,45 @@ function fmtDue(t){
   if(mins<30)return {txt:'due '+hhmm,cls:'due-soon'};
   return {txt:'next '+hhmm,cls:'due-ok'};
 }
+function freqLabel(h){ if(h==null)return 'q?'; if(h<1)return 'q'+Math.round(h*60)+'m'; return 'q'+(Number.isInteger(h)?h:h)+'h'; }
 function taskLine(p,t,i){
   if(t.recurring){
     const d=fmtDue(t);
     const lastTxt=t.last?('last '+new Date(t.last).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})):'—';
-    return `<div class="line recur"><span class="recur-ic">↻</span><span class="lt">${t.t} <span class="freq">q${t.freq||4}h</span></span><span class="when">${lastTxt}</span><span class="due ${d.cls}" onclick="logRecurring(${p.id},${i})">${d.txt}</span></div>`;
+    return `<div class="line recur"><span class="recur-ic">↻</span><span class="lt">${t.t} <span class="freq" onclick="event.stopPropagation();editFreq(${p.id},${i})">${freqLabel(t.freq)}</span></span><span class="when">${lastTxt}</span><span class="due ${d.cls}" onclick="logRecurring(${p.id},${i})">${d.txt}</span></div>`;
   }
   return `<div class="line ${t.done?'done':''}"><div class="tick ${t.done?'done':''}" onclick="tick(${p.id},${i})">✓</div><span class="lt">${t.t}</span><span class="owner">${t.o||''}</span><span class="when">${t.w||''}</span></div>`;
 }
+const FREQ_OPTS=[['0.5','30 min'],['1','1 hrly'],['2','2 hrly'],['3','3 hrly'],['4','4 hrly'],['6','6 hrly'],['8','8 hrly'],['12','12 hrly']];
 window.addRecurring=id=>{ if(!guard(id))return;
   const el=$(`#qr${id}`);const v=el.value.trim();if(!v)return;
   const p=byId(id);
-  // default 4-hourly; let them pick freq quickly via prompt-like pills next time. store minimal now.
-  p.tasks.push({t:v,recurring:true,freq:4,last:null,o:shortMe()});
-  commit(p);toast('Recurring task added (tap "log" each time it\'s done)');
+  showSheet(`<h3>Recurring task</h3><div class="sub"><b>${v}</b> — how often?</div>
+    <div class="field"><label>Frequency</label><div class="pillrow" id="fq">${FREQ_OPTS.map(f=>`<div class="pill ${f[0]==='4'?'sel':''}" data-f="${f[0]}">${f[1]}</div>`).join('')}</div></div>
+    <div class="field"><label>✏️ or custom (hours; use 0.5 for 30 min)</label><input id="fqc" type="number" step="0.5" min="0.25" placeholder="e.g. 1.5"></div>
+    <button class="go" id="fqsave">Add recurring task</button><button class="go ghost" onclick="closeSheet()">Cancel</button>`);
+  let fr=4;
+  document.querySelectorAll('#fq .pill').forEach(x=>x.onclick=()=>{document.querySelectorAll('#fq .pill').forEach(y=>y.classList.remove('sel'));x.classList.add('sel');fr=+x.dataset.f;$('#fqc').value='';});
+  $('#fqc').oninput=()=>{document.querySelectorAll('#fq .pill').forEach(y=>y.classList.remove('sel'));const c=parseFloat($('#fqc').value);if(c>0)fr=c;};
+  $('#fqsave').onclick=()=>{
+    p.tasks.push({t:v,recurring:true,freq:fr,last:null,o:shortMe()});
+    el.value=''; closeSheet(); commit(p); toast(`Added — ${freqLabel(fr)}, tap "log" each time it's done`);
+  };
 };
+window.editFreq=(id,i)=>{ if(!guard(id))return;
+  const p=byId(id);const t=p.tasks[i];
+  showSheet(`<h3>Change frequency</h3><div class="sub"><b>${t.t}</b> — currently ${freqLabel(t.freq)}</div>
+    <div class="field"><label>Frequency</label><div class="pillrow" id="fq2">${FREQ_OPTS.map(f=>`<div class="pill ${(+f[0])===t.freq?'sel':''}" data-f="${f[0]}">${f[1]}</div>`).join('')}</div></div>
+    <div class="field"><label>✏️ or custom (hours)</label><input id="fqc2" type="number" step="0.5" min="0.25" placeholder="e.g. 1.5"></div>
+    <button class="go" id="fqsave2">Save</button>
+    <button class="go danger" onclick="removeRecurring(${id},${i})">Remove this task</button>
+    <button class="go ghost" onclick="closeSheet()">Cancel</button>`);
+  let fr=t.freq;
+  document.querySelectorAll('#fq2 .pill').forEach(x=>x.onclick=()=>{document.querySelectorAll('#fq2 .pill').forEach(y=>y.classList.remove('sel'));x.classList.add('sel');fr=+x.dataset.f;$('#fqc2').value='';});
+  $('#fqc2').oninput=()=>{document.querySelectorAll('#fq2 .pill').forEach(y=>y.classList.remove('sel'));const c=parseFloat($('#fqc2').value);if(c>0)fr=c;};
+  $('#fqsave2').onclick=()=>{ t.freq=fr; closeSheet(); commit(p); toast('Frequency → '+freqLabel(fr)); };
+};
+window.removeRecurring=(id,i)=>{ if(!guard(id))return; const p=byId(id); p.tasks.splice(i,1); closeSheet(); commit(p); toast('Task removed'); };
 window.logRecurring=(id,i)=>{ if(!guard(id))return;
   const p=byId(id);const t=p.tasks[i];t.last=new Date().toISOString();commit(p,true);toast(t.t+' logged '+stamp());
 };
